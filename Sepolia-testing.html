@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Extra Security: Search engines ignore karein -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>TestX Protocol ($TESTX) - Testing on Base Sepolia</title>
+    <style>
+        :root { 
+            --green: #00FF00; --fire-orange: #FF4500; --gold: #FFD700; --dark-orange: #FF8C00; 
+            --glass: rgba(255,140,0,0.3); --dark-glass: rgba(0,0,0,0.7); 
+        }
+        body { margin:0; font-family: 'Segoe UI', Arial, sans-serif; 
+               background: linear-gradient(135deg, var(--dark-orange), var(--fire-orange)); color: white; min-height: 100vh; }
+        .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 60px 20px; backdrop-filter: blur(12px); 
+                 background: var(--glass); border-radius: 24px; margin-bottom: 30px; 
+                 box-shadow: 0 8px 32px rgba(255,69,0,0.5); border: 2px solid var(--gold); }
+        .logo-img { width: 300px; margin-bottom: 20px; border-radius: 50%; border: 8px solid var(--gold); box-shadow: 0 0 60px var(--fire-orange); }
+        h1 { font-size: 3.5em; margin: 10px 0; color: black; text-shadow: 0 4px 12px white; }
+        .tagline { font-size: 1.8em; font-weight: bold; margin: 20px 0; 
+                   color: white; text-shadow: 0 2px 8px black; }
+        .warning { 
+            background: #000000; padding: 20px; border-radius: 12px; 
+            margin: 20px 0; text-align: center; font-weight: bold; font-size: 1.2em; 
+            border: 2px solid var(--gold); 
+        }
+        .info { text-align: center; padding: 20px; }
+        #connectBtn { 
+            background: linear-gradient(45deg, white, var(--gold)); color: black;
+            padding: 18px 40px; font-size: 1.6em; font-weight: bold; border: none; border-radius: 50px; 
+            cursor: pointer; box-shadow: 0 0 30px white; 
+            transition: all 0.4s; text-transform: uppercase; letter-spacing: 2px;
+        }
+        #connectBtn:hover { transform: scale(1.1) rotate(2deg); box-shadow: 0 0 50px white; }
+        #connectBtn.connected { 
+            background: linear-gradient(45deg, #00FF00, #32CD32); 
+            cursor: default; 
+        }
+        .wallet-address { font-size: 1.4em; margin-top: 15px; color: white; display: none; font-weight: bold; text-shadow: 0 0 10px black; }
+        nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 40px; }
+        nav button { background: var(--glass); border: 1px solid var(--gold); padding: 14px 28px; 
+                     border-radius: 50px; color: white; font-size: 1.1em; cursor: pointer; 
+                     backdrop-filter: blur(10px); transition: all 0.3s; }
+        nav button:hover, nav button.active { background: linear-gradient(var(--gold), white); color: black;
+                                              transform: translateY(-3px); box-shadow: 0 6px 20px white; }
+        .section { display: none; background: var(--glass); backdrop-filter: blur(15px); 
+                   border-radius: 24px; padding: 30px; margin-bottom: 30px; 
+                   box-shadow: 0 8px 32px rgba(255,69,0,0.4); border: 1px solid var(--gold); }
+        .section.active { display: block; animation: fadeIn 0.6s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { 
+            background: #000000; border-radius: 18px; padding: 24px; margin: 20px 0; border: 1px solid var(--gold); 
+        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        input[type="number"] { padding: 14px; border-radius: 12px; border: none; background: rgba(255,255,255,0.2); color: white; width: 100%; font-size: 1.1em; }
+        button.main-btn { background: linear-gradient(var(--gold), white); padding: 16px; font-size: 1.3em; width: 100%; margin-top: 10px; 
+                          cursor: pointer; border: none; border-radius: 12px; color: black; font-weight: bold; transition: 0.3s; }
+        button.main-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 20px white; }
+        button.main-btn:disabled { background: #888; cursor: not-allowed; opacity: 0.6; }
+        .stat { font-size: 1.5em; margin: 15px 0; }
+        .progress { height: 32px; background: rgba(255,255,255,0.3); border-radius: 16px; overflow: hidden; margin: 20px 0; position: relative; }
+        .bar { height: 100%; background: linear-gradient(to right, white, var(--gold)); width: 0%; transition: width 1s ease; }
+        .progress-text { position: absolute; width: 100%; text-align: center; line-height: 32px; font-weight: bold; color: black; text-shadow: 0 0 10px white; }
+        .preview { 
+            font-size: 1.3em; margin: 15px 0; 
+            color: var(--green); font-weight: bold; 
+            text-shadow: 0 0 10px black; 
+        }
+        .presale-header {
+            background: #000000;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 18px;
+            border: 1px solid var(--gold);
+            text-align: center;
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 8px black;
+        }
+        footer { 
+            text-align: center; padding: 40px; margin-top: 50px; 
+            font-size: 1.1em; 
+            color: #000000; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" alt="$TESTX Logo" class="logo-img">
+            <h1>TestX Protocol ($TESTX)</h1>
+            <p class="tagline">Our goal is not speed — it is legacy.</p>
+        </header>
+
+        <div class="warning">
+            ⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>
+            Official Test Contract: <span id="contractAddrDisplay">0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b</span>
+        </div>
+
+        <div class="info">
+            <button id="connectBtn">Connect Wallet</button>
+            <p class="wallet-address" id="walletAddress"></p>
+        </div>
+
+        <nav>
+            <button class="active" data-section="presale">Presale</button>
+            <button data-section="staking">Staking</button>
+            <button data-section="rewards">Staking Reward</button>
+            <button data-section="vesting">Vesting</button>
+            <button data-section="airdrop">Airdrop</button>
+            <button data-section="whitepaper">Whitepaper</button>
+        </nav>
+
+        <div id="presale" class="section active">
+            <div class="presale-header">
+                Presale – 0.000125 ETH per $TESTX (8,000 $TESTX per 1 ETH)
+            </div>
+            <div class="card">
+                <p class="stat">Total Available: <strong>500,000 $TESTX</strong></p>
+                <p class="stat">Tokens Sold: <strong><span id="tokensSold">0</span> $TESTX</strong></p>
+                <p class="stat">Tokens Remaining: <strong><span id="tokensRemaining">500,000</span> $TESTX</strong></p>
+                <div class="progress"><div class="bar" id="presaleBar"><div class="progress-text" id="progressText">0%</div></div></div>
+                <p class="stat">Your Tokens: <strong><span id="yourTokens">0</span> $TESTX</strong></p>
+                <p style="font-size:1.1em; opacity:0.9;">Min: 100 $TESTX (0.0125 ETH) • Max: 10,000 $TESTX (1.25 ETH)</p>
+                <input type="number" id="ethAmount" placeholder="Enter ETH amount (0.0125 - 1.25)" step="0.001">
+                <p class="preview" id="tokenPreview">You'll receive: 0 $TESTX</p>
+                <button id="contributeBtn" class="main-btn" disabled>Contribute ETH</button>
+            </div>
+        </div>
+
+        <!-- Baaki sections same as before, $TESTX ke saath -->
+
+        <div id="staking" class="section">
+            <h2>Staking</h2>
+            <div class="card">
+                <p class="stat">Your Already Staked: <strong><span id="stakedAmount">0</span> $TESTX</strong></p>
+                <p>Unlock Time: <span id="unlockTime">—</span></p>
+                <input type="number" id="stakeAmount" placeholder="Amount to stake">
+                <button id="stakeBtn" class="main-btn" disabled>Stake</button>
+                <button id="unstakeBtn" class="main-btn" disabled>Unstake</button>
+            </div>
+        </div>
+
+        <div id="rewards" class="section">
+            <h2>Staking Rewards</h2>
+            <div class="card">
+                <p class="stat">Pending Rewards: <strong><span id="pendingRewards">0</span> $TESTX</strong></p>
+                <div class="progress"><div class="bar"></div></div>
+                <button id="claimRewardsBtn" class="main-btn" disabled>Staking Reward Claim</button>
+            </div>
+        </div>
+
+        <div id="vesting" class="section">
+            <h2>Vesting Status</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Owner / Team Vesting</h3>
+                    <p class="stat">Releasable: <strong><span id="ownerReleasable">0</span> $TESTX</strong></p>
+                    <div class="progress"><div class="bar"></div></div>
+                </div>
+                <div class="card">
+                    <h3>Growth Fund Vesting</h3>
+                    <p class="stat">Releasable: <strong><span id="growthReleasable">0</span> $TESTX</strong></p>
+                    <div class="progress"><div class="bar"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="airdrop" class="section">
+            <h2>Airdrop</h2>
+            <div class="card">
+                <p>Airdrop coming later! Connect wallet to check eligibility.</p>
+                <div id="airdropStatus"></div>
+                <button id="claimAirdropBtn" class="main-btn" style="display:none;">Claim Airdrop</button>
+            </div>
+        </div>
+
+        <div id="whitepaper" class="section">
+            <h2>Whitepaper</h2>
+            <div class="card">
+                <p>Full $TESTX mechanics and roadmap.</p>
+            </div>
+        </div>
+
+        <footer>
+            © 2025 TestX Protocol • Testing on Base Sepolia<br>
+            Do NOT send real ETH — Testnet Only 🔥
+        </footer>
+    </div>
+
+    <script>
+        const RATE = 8000;
+        const MIN_TOKENS = 100;
+        const MAX_TOKENS = 10000;
+        const PRESALE_CAP = 500000;
+        let connected = false;
+        let tokensSold = 0;
+        let yourTokens = 0;
+        let staked = 0;
+        let unlockDate = null;
+        let eligibleForAirdrop = false;
+
+        function updatePresale() {
+            document.getElementById('tokensSold').textContent = tokensSold.toLocaleString();
+            document.getElementById('tokensRemaining').textContent = (PRESALE_CAP - tokensSold).toLocaleString();
+            document.getElementById('yourTokens').textContent = yourTokens.toLocaleString();
+            const percentage = (tokensSold / PRESALE_CAP) * 100;
+            document.getElementById('presaleBar').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage.toFixed(1) + '% Sold';
+            if (tokensSold >= PRESALE_CAP) {
+                document.getElementById('contributeBtn').disabled = true;
+                document.getElementById('contributeBtn').textContent = 'Presale Sold Out!';
+            }
+        }
+
+        document.getElementById('connectBtn').addEventListener('click', () => {
+            connected = true;
+
+            const btn = document.getElementById('connectBtn');
+            btn.textContent = 'Wallet Connected 🔥';
+            btn.classList.add('connected');
+            btn.disabled = true;
+
+            document.getElementById('walletAddress').style.display = 'block';
+            document.getElementById('walletAddress').textContent = '0x1234...5678';
+
+            document.getElementById('contractAddrDisplay').textContent = '0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b';
+            document.querySelectorAll('.main-btn').forEach(b => b.disabled = false);
+            alert('Wallet connected! All features unlocked 🔥 (Testnet Mode)');
+
+            eligibleForAirdrop = Math.random() > 0.5;
+            const statusDiv = document.getElementById('airdropStatus');
+            const claimBtn = document.getElementById('claimAirdropBtn');
+            if (eligibleForAirdrop) {
+                statusDiv.innerHTML = '<p style="color:white;font-weight:bold;font-size:1.4em;">You are ELIGIBLE! 🎉</p>';
+                claimBtn.style.display = 'block';
+            } else {
+                statusDiv.innerHTML = '<p style="color:white;">Not eligible yet.</p>';
+                claimBtn.style.display = 'none';
+            }
+
+            updatePresale();
+        });
+
+        document.getElementById('ethAmount').addEventListener('input', () => {
+            const eth = parseFloat(document.getElementById('ethAmount').value) || 0;
+            const tokens = eth * RATE;
+            document.getElementById('tokenPreview').textContent = `You'll receive: ${tokens.toFixed(2)} $TESTX`;
+        });
+
+        document.getElementById('contributeBtn').addEventListener('click', () => {
+            const eth = parseFloat(document.getElementById('ethAmount').value) || 0;
+            const tokens = eth * RATE;
+
+            if (tokens < MIN_TOKENS) return alert('Minimum 100 $TESTX!');
+            if (tokens > MAX_TOKENS) return alert('Maximum 10,000 $TESTX!');
+            if (tokensSold + tokens > PRESALE_CAP) return alert('Not enough tokens remaining!');
+
+            tokensSold += tokens;
+            yourTokens += tokens;
+            updatePresale();
+            alert(`Success! Bought ${tokens.toFixed(2)} $TESTX 🔥 (Testnet Simulation)`);
+        });
+
+        // Baaki script same as before, $TESTX ke saath
+
+        document.getElementById('stakeBtn').addEventListener('click', () => {
+            const amt = parseFloat(document.getElementById('stakeAmount').value) || 0;
+            if (amt <= 0) return alert('Enter valid amount!');
+            staked += amt;
+            document.getElementById('stakedAmount').textContent = staked.toFixed(2);
+            unlockDate = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000);
+            document.getElementById('unlockTime').textContent = unlockDate.toLocaleDateString();
+            alert(`Staked ${amt} $TESTX! Unlocks on ${unlockDate.toLocaleDateString()} 🔥`);
+        });
+
+        document.getElementById('unstakeBtn').addEventListener('click', () => {
+            if (!unlockDate || Date.now() < unlockDate.getTime()) return alert('Tokens still locked!');
+            alert('Unstaked successfully! 🔥');
+            staked = 0;
+            document.getElementById('stakedAmount').textContent = '0';
+            document.getElementById('unlockTime').textContent = '—';
+        });
+
+        document.getElementById('claimRewardsBtn').addEventListener('click', () => {
+            if (staked <= 0) return alert('Stake first to earn rewards!');
+            alert('Quarterly rewards claimed! 🔥');
+        });
+
+        document.getElementById('claimAirdropBtn').addEventListener('click', () => {
+            alert('Airdrop claimed! Enjoy your $TESTX 🔥');
+        });
+
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                document.getElementById(btn.dataset.section).classList.add('active');
+                btn.classList.add('active');
+            });
+        });
+
+        // Default contract display
+        document.getElementById('contractAddrDisplay').textContent = '0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b';
+
+        updatePresale();
+    </script>
+</body>
+</html>
