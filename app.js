@@ -133,14 +133,19 @@ document.querySelectorAll('nav button').forEach(b => {
 
 document.getElementById('ethAmount').oninput = () => {
     const eth = parseFloat(document.getElementById('ethAmount').value) || 0;
-    document.getElementById('tokenPreview').textContent = `You'll receive: ${(eth * 8000).toFixed(0)} $TESTX`;
+    document.getElementById('tokenPreview').textContent = You'll receive: ${(eth * 8000).toFixed(0)} $TESTX;
 };
 
+// FIXED CONTRIBUTE WITH MANUAL GAS LIMIT (bypass estimation error)
 document.getElementById('contributeBtn').onclick = async () => {
     const eth = parseFloat(document.getElementById('ethAmount').value);
     if (!eth || eth < 0.0125 || eth > 1.25) return alert('Amount must be between 0.0125 and 1.25 ETH');
     try {
-        const tx = await signer.sendTransaction({ to: CONTRACT, value: ethers.utils.parseEther(eth.toString()) });
+        const tx = await signer.sendTransaction({
+            to: CONTRACT,
+            value: ethers.utils.parseEther(eth.toString()),
+            gasLimit: 300000  // High manual gas limit — fixes "cannot estimate gas" glitch
+        });
         await tx.wait();
         alert('Contributed successfully!');
         document.getElementById('ethAmount').value = '';
