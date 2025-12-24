@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TestX Protocol ($TESTX)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root { --gold:#FFD700; --orange:#FF4500; --dark-orange:#FF8C00; --glass:rgba(255,140,0,0.3); }
+body { margin:0; font-family:Segoe UI,Arial; background:linear-gradient(135deg,var(--dark-orange),var(--orange)); color:#fff; min-height:100vh; }
+.container { max-width:960px; margin:auto; padding:20px; }
+header { text-align:center; padding:60px 20px; background:var(--glass); border-radius:24px; border:2px solid var(--gold); }
+.logo-img { width:300px; border-radius:50%; border:8px solid var(--gold); box-shadow:0 0 60px var(--orange); }
+h1 { font-size:3.5em; color:#000; text-shadow:0 4px 12px #fff; }
+.tagline { font-size:1.8em; }
+.warning { background:#000; padding:20px; border-radius:12px; text-align:center; border:2px solid var(--gold); margin:20px 0; }
+#connectBtn, #disconnectBtn { padding:18px 40px; font-size:1.6em; border:none; border-radius:50px; cursor:pointer; }
+#connectBtn { background:linear-gradient(45deg,#fff,var(--gold)); color:#000; }
+#disconnectBtn { background:#888; color:#fff; display:none; margin-left:10px; }
+.wallet-address { font-size:1.4em; margin-top:15px; display:none; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:40px 0; }
+nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; }
+nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }
+.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }
+.section.active { display:block; }
+.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; }
+input[type=number] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; }
+.main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
+.main-btn:disabled { background:#888; cursor:not-allowed; }
+.stat { font-size:1.5em; margin:15px 0; }
+.progress { height:32px; background:rgba(255,255,255,0.3); border-radius:16px; overflow:hidden; position:relative; margin:20px 0; }
+.bar { height:100%; background:linear-gradient(to right,#fff,var(--gold)); width:0%; transition:width 1s; }
+.progress-text { position:absolute; width:100%; text-align:center; line-height:32px; color:#000; font-weight:bold; }
+.preview { font-size:1.3em; color:#00FF00; font-weight:bold; }
+footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
+canvas { background:#111; border-radius:16px; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" class="logo-img">
+<h1>TestX Protocol ($TESTX)</h1>
+<p class="tagline">Our goal is not speed — it is legacy.</p>
+</header>
+
+<div class="warning">
+⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>
+Contract: 0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b
+</div>
+
+<div style="text-align:center;padding:20px;">
+<button id="connectBtn">Connect Wallet</button>
+<button id="disconnectBtn">Disconnect Wallet</button>
+<p class="wallet-address" id="walletAddress"></p>
+</div>
+
+<nav>
+<button class="active" data-section="presale">Presale</button>
+<button data-section="staking">Staking</button>
+<button data-section="rewards">Staking Reward</button>
+<button data-section="vesting">Vesting</button>
+<button data-section="charts">Charts</button>
+<button data-section="airdrop">Airdrop</button>
+<button data-section="whitepaper">Whitepaper</button>
+</nav>
+
+<!-- PRESALE -->
+<div id="presale" class="section active">
+<h2>Presale – 8,000 $TESTX per 1 ETH</h2>
+<div class="card">
+<p class="stat">Raised: <strong><span id="totalRaised">0</span> ETH</strong></p>
+<p class="stat">Sold: <strong><span id="tokensSold">0</span> / 500,000 $TESTX</strong></p>
+<div class="progress"><div class="bar" id="presaleBar"></div><div class="progress-text" id="progressText">0%</div></div>
+<p class="stat">Your Contribution: <strong><span id="yourContribution">0</span> ETH</strong></p>
+<p class="stat">Your Balance: <strong><span id="userBalance">0</span> $TESTX</strong></p>
+<input type="number" id="ethAmount" placeholder="ETH amount (min 0.0125 - max 1.25)" step="0.001">
+<p class="preview" id="tokenPreview">You'll receive: 0 $TESTX</p>
+<button id="contributeBtn" class="main-btn" disabled>Contribute ETH</button>
+<button id="claimTokensBtn" class="main-btn" style="display:none;">Claim Presale Tokens</button>
+</div>
+</div>
+
+<!-- STAKING -->
+<div id="staking" class="section">
+<h2>Staking</h2>
+<div class="card">
+<p class="stat">Staked: <strong><span id="stakedAmount">0</span> $TESTX</strong></p>
+<p>Unlock: <span id="unlockTime">—</span></p>
+<input type="number" id="stakeAmount" placeholder="Amount">
+<button id="stakeBtn" class="main-btn" disabled>Stake</button>
+<button id="unstakeBtn" class="main-btn" disabled>Unstake</button>
+</div>
+</div>
+
+<!-- REWARDS -->
+<div id="rewards" class="section">
+<h2>Staking Rewards</h2>
+<div class="card">
+<p class="stat">Pending: <strong><span id="pendingRewards">0</span> $TESTX</strong></p>
+<button id="claimRewardsBtn" class="main-btn" disabled>Claim Rewards</button>
+</div>
+</div>
+
+<!-- VESTING -->
+<div id="vesting" class="section">
+<h2>Vesting Status</h2>
+<div class="card">
+<p>Owner (0xE133...0001): <strong><span id="ownerReleasable">0</span> $TESTX</strong></p>
+<button id="claimOwnerBtn" class="main-btn" disabled>Claim Owner</button>
+<p>Growth (0xafee...8A21): <strong><span id="growthReleasable">0</span> $TESTX</strong></p>
+<button id="claimGrowthBtn" class="main-btn" disabled>Claim Growth</button>
+</div>
+</div>
+
+<!-- CHARTS -->
+<div id="charts" class="section">
+<h2>Live Presale & Staking Charts</h2>
+<div class="card">
+<canvas id="presaleChart" height="200"></canvas>
+<canvas id="stakingChart" height="200"></canvas>
+</div>
+</div>
+
+<div id="airdrop" class="section"><h2>Airdrop</h2><div class="card"><p>Coming soon</p></div></div>
+<div id="whitepaper" class="section"><h2>Whitepaper</h2><div class="card"><p>Coming soon</p></div></div>
+
+<footer>© 2025 TestX Protocol • Base Sepolia Testnet 🔥</footer>
+</div>
+
+<script>
+const CONTRACT = "0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b";
+const OWNER = "0xE1330576Dd2254224F046624E05ecA7f51C50001".toLowerCase();
+const GROWTH = "0xafee6142bDBb2ea7882Bfc60145E647FdA368A21".toLowerCase();
+const ABI = [ /* full ABI here */ ];
+
+let contract, signer, user;
+const connectBtn = document.getElementById('connectBtn');
+const disconnectBtn = document.getElementById('disconnectBtn');
+const walletAddress = document.getElementById('walletAddress');
+
+// --- Connect / Disconnect ---
+async function connectWallet(){
+    if(!window.ethereum)return alert("Install MetaMask");
+    try{
+        const accounts = await ethereum.request({method:'eth_requestAccounts'});
+        user = accounts[0].toLowerCase();
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        contract = new ethers.Contract(CONTRACT, ABI, signer);
+        connectBtn.style.display='none';
+        disconnectBtn.style.display='inline-block';
+        walletAddress.textContent=user.slice(0,6)+'...'+user.slice(-4);
+        walletAddress.style.display='block';
+        loadData();
+    }catch(e){alert("Failed: "+e.message);}
+}
+function disconnectWallet(){
+    user=null; signer=null; contract=null;
+    connectBtn.style.display='inline-block'; disconnectBtn.style.display='none';
+    walletAddress.style.display='none';
+    document.querySelectorAll('.main-btn').forEach(b=>b.disabled=true);
+}
+
+// --- Data load & auto-update ---
+async function loadData(){
+    if(!contract||!user) return;
+    const d=18;
+    const raised=await contract.totalPresaleRaised();
+    const sold=await contract.totalPresaleTokensSold();
+    const soldNum=Number(ethers.formatUnits(sold,d));
+    document.getElementById('totalRaised').textContent=Number(ethers.formatEther(raised)).toFixed(4);
+    document.getElementById('tokensSold').textContent=soldNum.toLocaleString()+' / 500,000';
+    const perc = soldNum/500000*100;
+    document.getElementById('presaleBar').style.width=perc+'%';
+    document.getElementById('progressText').textContent=perc.toFixed(1)+'%';
+
+    const contrib=await contract.presaleContribution(user);
+    document.getElementById('yourContribution').textContent=Number(ethers.formatEther(contrib)).toFixed(4);
+    const bal=await contract.balanceOf(user);
+    document.getElementById('userBalance').textContent=Number(ethers.formatUnits(bal,d)).toFixed(4);
+
+    const stake=await contract.getUserStake(user);
+    document.getElementById('stakedAmount').textContent=Number(ethers.formatUnits(stake.amount,d)).toLocaleString();
+    if(stake.unlockTime>0) document.getElementById('unlockTime').textContent=new Date(stake.unlockTime*1000).toLocaleDateString();
+
+    const pending=await contract.calculatePendingRewards(user);
+    document.getElementById('pendingRewards').textContent=Number(ethers.formatUnits(pending,d)).toLocaleString();
+
+    const ownerRel=await contract.releasableOwnerVested();
+    document.getElementById('ownerReleasable').textContent=Number(ethers.formatUnits(ownerRel,d)).toLocaleString();
+    const growthRel=await contract.releasableGrowthVested();
+    document.getElementById('growthReleasable').textContent=Number(ethers.formatUnits(growthRel,d)).toLocaleString();
+
+    document.getElementById('claimOwnerBtn').disabled=user!==OWNER;
+    document.getElementById('claimGrowthBtn').disabled=user!==GROWTH;
+
+    const trading=await contract.tradingEnabled();
+    if(contrib>0 && trading) document.getElementById('claimTokensBtn').style.display='block';
+    document.querySelectorAll('.main-btn').forEach(b=>b.disabled=false);
+
+    updateCharts(soldNum, stake.amount, pending);
+}
+
+// --- Charts ---
+let presaleChart, stakingChart;
+function initCharts(){
+    const ctx1=document.getElementById('presaleChart').getContext('2d');
+    presaleChart=new Chart(ctx1,{type:'bar',data:{labels:['Sold','Remaining'],datasets:[{label:'$TESTX Presale',data:[0,500000],backgroundColor:['#FFD700','#FF8C00']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+    const ctx2=document.getElementById('stakingChart').getContext('2d');
+    stakingChart=new Chart(ctx2,{type:'bar',data:{labels:['Staked','Remaining'],datasets:[{label:'$TESTX Staked',data:[0,500000],backgroundColor:['#00FF00','#32CD32']}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+}
+function updateCharts(sold, staked, pending){
+    if(presaleChart){ presaleChart.data.datasets[0].data=[sold,500000-sold]; presaleChart.update(); }
+    if(stakingChart){ stakingChart.data.datasets[0].data=[Number(ethers.formatUnits(staked,18)),500000-Number(ethers.formatUnits(staked,18))]; stakingChart.update();}
+}
+
+// --- Nav ---
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById(b.dataset.section).classList.add('active');
+});
+
+// --- Presale input preview ---
+document.getElementById('ethAmount').oninput=()=>{const eth=parseFloat(document.getElementById('ethAmount').value)||0;document.getElementById('tokenPreview').textContent=`You'll receive: ${(eth*8000).toFixed(0)} $TESTX`;}
+
+// --- Buttons ---
+document.getElementById('contributeBtn').onclick=async()=>{
+    if(!signer)return alert("Connect wallet first");
+    const eth=parseFloat(document.getElementById('ethAmount').value);
+    if(!eth||eth<0.0125||eth>1.25) return alert('Amount must be 0.0125 - 1.25 ETH');
+    try{const tx=await signer.sendTransaction({to:CONTRACT,value:ethers.parseEther(eth.toString())});await tx.wait();alert('Contributed!');document.getElementById('ethAmount').value='';document.getElementById('tokenPreview').textContent="You'll receive: 0 $TESTX";loadData();}
+    catch(e){alert("Failed: "+e.message);}
+};
+document.getElementById('claimTokensBtn').onclick=async()=>{try{const tx=await contract.claimPresaleTokens();await tx.wait();alert("Presale tokens claimed!");loadData();}catch(e){alert("Failed: "+e.message);}};
+document.getElementById('stakeBtn').onclick=async()=>{const amt=parseFloat(document.getElementById('stakeAmount').value);if(!amt||amt<=0)return alert("Enter amount");try{const tx=await contract.stake(ethers.parseUnits(amt.toString(),18));await tx.wait();alert("Staked!");document.getElementById('stakeAmount').value='';loadData();}catch(e){alert("Failed: "+e.message);}};
+document.getElementById('unstakeBtn').onclick=async()=>{const amt=parseFloat(document.getElementById('stakeAmount').value);if(!amt||amt<=0)return alert("Enter amount");try{const tx=await contract.unstake(ethers.parseUnits(amt.toString(),18));await tx.wait();alert("Unstaked!");document.getElementById('stakeAmount').value='';loadData();}catch(e){alert("Failed: "+e.message);}};
+document.getElementById('claimRewardsBtn').onclick=async()=>{try{const tx=await contract.claimRewards();await tx.wait();alert("Rewards claimed!");loadData();}catch(e){alert("Failed: "+e.message);}};
+document.getElementById('claimOwnerBtn').onclick=async()=>{try{const tx=await contract.claimOwnerVested();await tx.wait();alert("Owner vested claimed!");loadData();}catch(e){alert("Failed: "+e.message);}};
+document.getElementById('claimGrowthBtn').onclick=async()=>{try{const tx=await contract.claimGrowthVested();await tx.wait();alert("Growth vested claimed!");loadData();}catch(e){alert("Failed: "+e.message);}};
+connectBtn.onclick=connectWallet; disconnectBtn.onclick=disconnectWallet;
+
+// Init charts
+initCharts();
+
+// Auto refresh data every 10s
+setInterval(()=>{ if(user) loadData(); },10000);
+</script>
+</body>
+</html>
