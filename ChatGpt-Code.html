@@ -1,0 +1,181 @@
+<script>
+/* ================== CONFIG ================== */
+const TOKEN_CONTRACT = "0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b";
+const OWNER = "0xE1330576Dd2254224F046624E05ecA7f51C50001".toLowerCase();
+const GROWTH = "0xafee6142bDBb2ea7882Bfc60145E647FdA368A21".toLowerCase();
+
+const ABI = [
+  "function balanceOf(address) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function totalPresaleRaised() view returns (uint256)",
+  "function totalPresaleTokensSold() view returns (uint256)",
+  "function presaleContribution(address) view returns (uint256)",
+  "function tradingEnabled() view returns (bool)",
+  "function claimPresaleTokens()",
+  "function stake(uint256)",
+  "function unstake(uint256)",
+  "function calculatePendingRewards(address) view returns (uint256)",
+  "function claimRewards()",
+  "function getUserStake(address) view returns (uint256,uint256,uint256,uint256)",
+  "function releasableOwnerVested() view returns (uint256)",
+  "function releasableGrowthVested() view returns (uint256)",
+  "function claimOwnerVested()",
+  "function claimGrowthVested()"
+];
+
+let provider, signer, contract, user, DECIMALS = 18;
+
+/* ================== AUTO CONNECT ================== */
+window.addEventListener("load", async () => {
+  if (!window.ethereum) return;
+  const accounts = await ethereum.request({ method: "eth_accounts" });
+  if (accounts.length > 0) connect();
+});
+
+/* ================== CONNECT ================== */
+async function connect() {
+  provider = new ethers.BrowserProvider(window.ethereum);
+  signer = await provider.getSigner();
+  user = (await signer.getAddress()).toLowerCase();
+  contract = new ethers.Contract(TOKEN_CONTRACT, ABI, signer);
+  DECIMALS = await contract.decimals();
+
+  connectBtn.textContent = "CONNECTED 🔥";
+  connectBtn.classList.add("connected");
+  connectBtn.disabled = true;
+
+  walletAddress.textContent = user.slice(0,6) + "..." + user.slice(-4);
+  walletAddress.style.display = "block";
+
+  await loadData();
+}
+
+/* ================== LOAD DATA ================== */
+async function loadData() {
+  const trading = await contract.tradingEnabled();
+
+  /* Presale stats */
+  const raised = await contract.totalPresaleRaised();
+  totalRaised.textContent = Number(ethers.formatEther(raised)).toFixed(4);
+
+  const sold = await contract.totalPresaleTokensSold();
+  const soldNum = Number(ethers.formatUnits(sold, DECIMALS));
+  tokensSold.textContent = soldNum.toLocaleString() + " / 500,000";
+
+  const perc = (soldNum / 500000) * 100;
+  presaleBar.style.width = perc + "%";
+  progressText.textContent = perc.toFixed(1) + "%";
+
+  /* User balances */
+  const bal = await contract.balanceOf(user);
+  userBalance.textContent = ethers.formatUnits(bal, DECIMALS);
+
+  const contrib = await contract.presaleContribution(user);
+  yourContribution.textContent = ethers.formatEther(contrib);
+
+  /* Stake */
+  const stake = await contract.getUserStake(user);
+  stakedAmount.textContent = ethers.formatUnits(stake[0], DECIMALS);
+  unlockTime.textContent =
+    stake[1] > 0 ? new Date(Number(stake[3]) * 1000).toLocaleDateString() : "—";
+
+  /* Rewards */
+  const pending = await contract.calculatePendingRewards(user);
+  pendingRewards.textContent = ethers.formatUnits(pending, DECIMALS);
+
+  /* Vesting */
+  const ownerRel = await contract.releasableOwnerVested();
+  ownerReleasable.textContent = ethers.formatUnits(ownerRel, DECIMALS);
+  claimOwnerBtn.disabled = ownerRel === 0n || user !== OWNER;
+
+  const growthRel = await contract.releasableGrowthVested();
+  growthReleasable.textContent = ethers.formatUnits(growthRel, DECIMALS);
+  claimGrowthBtn.disabled = growthRel === 0n || user !== GROWTH;
+
+  /* Buttons */
+  contributeBtn.disabled = false;
+  stakeBtn.disabled = !trading;
+  unstakeBtn.disabled = !trading;
+  claimRewardsBtn.disabled = pending === 0n;
+  claimTokensBtn.style.display = trading && contrib > 0n ? "block" : "none";
+}
+
+/* ================== PRESALE SEND ================== */
+contributeBtn.onclick = async () => {
+  const eth = parseFloat(ethAmount.value);
+  if (!eth || eth < 0.0125 || eth > 1.25)
+    return alert("Amount must be 0.0125 – 1.25 ETH");
+
+  const tx = await signer.sendTransaction({
+    to: TOKEN_CONTRACT,
+    value: ethers.parseEther(eth.toString())
+  });
+  await tx.wait();
+  ethAmount.value = "";
+  tokenPreview.textContent = "You'll receive: 0 TESTER";
+  await loadData();
+};
+
+ethAmount.oninput = () => {
+  const eth = parseFloat(ethAmount.value) || 0;
+  tokenPreview.textContent = `You'll receive: ${(eth * 8000).toFixed(0)} TESTER`;
+};
+
+/* ================== CLAIM PRESALE ================== */
+claimTokensBtn.onclick = async () => {
+  const tx = await contract.claimPresaleTokens();
+  await tx.wait();
+  await loadData();
+};
+
+/* ================== STAKING ================== */
+stakeBtn.onclick = async () => {
+  const amt = stakeAmount.value;
+  if (!amt || amt <= 0) return alert("Invalid amount");
+  const tx = await contract.stake(ethers.parseUnits(amt, DECIMALS));
+  await tx.wait();
+  stakeAmount.value = "";
+  await loadData();
+};
+
+unstakeBtn.onclick = async () => {
+  const amt = stakeAmount.value;
+  if (!amt || amt <= 0) return alert("Invalid amount");
+  const tx = await contract.unstake(ethers.parseUnits(amt, DECIMALS));
+  await tx.wait();
+  stakeAmount.value = "";
+  await loadData();
+};
+
+/* ================== REWARDS ================== */
+claimRewardsBtn.onclick = async () => {
+  const tx = await contract.claimRewards();
+  await tx.wait();
+  await loadData();
+};
+
+/* ================== VESTING ================== */
+claimOwnerBtn.onclick = async () => {
+  const tx = await contract.claimOwnerVested();
+  await tx.wait();
+  await loadData();
+};
+
+claimGrowthBtn.onclick = async () => {
+  const tx = await contract.claimGrowthVested();
+  await tx.wait();
+  await loadData();
+};
+
+/* ================== NAV ================== */
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.section).classList.add("active");
+  };
+});
+
+connectBtn.onclick = connect;
+</script>
