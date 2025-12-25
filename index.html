@@ -1,57 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESG2 Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="abi.js" defer></script>
-    <script src="app.js" defer></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rox Protocol ($ROX)</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="abi.js"></script>
+
+<style>
+:root { --gold:#FFD700; --orange:#FF4500; --dark-orange:#FF8C00; --glass:rgba(255,140,0,0.3); }
+body { margin:0; font-family:Segoe UI,Arial; background:linear-gradient(135deg,var(--dark-orange),var(--orange)); color:#fff; min-height:100vh; }
+.container { max-width:960px; margin:auto; padding:20px; }
+header { text-align:center; padding:60px 20px; background:var(--glass); border-radius:24px; border:2px solid var(--gold); }
+.logo-img { width:300px; border-radius:50%; border:8px solid var(--gold); box-shadow:0 0 60px var(--orange); }
+h1 { font-size:3.5em; color:#000; text-shadow:0 4px 12px #fff; }
+.tagline { font-size:1.8em; }
+.warning { background:#000; padding:20px; border-radius:12px; text-align:center; border:2px solid var(--gold); margin:20px 0; }
+#connectBtn, #disconnectBtn { padding:18px 40px; font-size:1.6em; border:none; border-radius:50px; cursor:pointer; }
+#connectBtn { background:linear-gradient(45deg,#fff,var(--gold)); color:#000; }
+#disconnectBtn { background:#888; color:#fff; display:none; margin-left:10px; }
+.wallet-address { font-size:1.4em; margin-top:15px; display:none; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:40px 0; }
+nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; }
+nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }
+.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }
+.section.active { display:block; }
+.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; }
+input[type=number] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; }
+.main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
+.main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }
+.stat { font-size:1.5em; margin:15px 0; }
+.progress { height:32px; background:rgba(255,255,255,0.3); border-radius:16px; overflow:hidden; position:relative; margin:20px 0; }
+.bar { height:100%; background:linear-gradient(to right,#fff,var(--gold)); width:0%; transition:width 1s; }
+.progress-text { position:absolute; width:100%; text-align:center; line-height:32px; color:#000; font-weight:bold; }
+.preview { font-size:1.3em; color:#00FF00; font-weight:bold; }
+canvas { background:#111; border-radius:16px; margin-top:20px; }
+footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
+</style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body>
+<div class="container">
+<header>
+<img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" class="logo-img" alt="Rox Logo">
+<h1>Rox Protocol ($ROX)</h1>
+<p class="tagline">Our goal is not speed — it is legacy.</p>
+</header>
 
-    <header class="bg-gray-800 p-4 text-center">
-        <h1 class="text-2xl md:text-4xl font-bold">Estrogen 2.0 (ESG2)</h1>
-        <button id="connectWalletBtn" class="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded">Connect Wallet</button>
-        <div id="walletAddress" class="mt-1 text-sm break-words"></div>
-    </header>
+<div class="warning">
+⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>
+Contract: 0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b
+</div>
 
-    <main class="p-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+<div style="text-align:center;padding:20px;">
+<button id="connectBtn">Connect Wallet</button>
+<button id="disconnectBtn">Disconnect Wallet</button>
+<p class="wallet-address" id="walletAddress"></p>
+</div>
 
-        <!-- Circulating Supply Chart -->
-        <div class="bg-gray-800 p-4 rounded shadow">
-            <h2 class="text-lg font-semibold mb-2">Circulating Supply History</h2>
-            <canvas id="supplyChart" class="w-full h-48"></canvas>
-        </div>
+<nav>
+<button class="active" data-section="presale">Presale</button>
+<button data-section="staking">Staking</button>
+<button data-section="rewards">Staking Reward</button>
+<button data-section="vesting">Vesting</button>
+<button data-section="circulating">Circulating Supply</button>
+<button data-section="transparency">Transparency Vault</button>
+<button data-section="holdersgrowth">Holders Growth</button>
+<button data-section="charts">Charts</button>
+</nav>
 
-        <!-- Investor Transparency Panel -->
-        <div class="bg-gray-800 p-4 rounded shadow">
-            <h2 class="text-lg font-semibold mb-2">Investor Transparency</h2>
-            <ul id="transparencyPanel" class="space-y-1 text-sm"></ul>
-        </div>
+<div id="presale" class="section active">
+<h2>Presale – 8,000 $ROX per 1 ETH</h2>
+<div class="card">
+<p class="stat">Your Balance: <strong><span id="userBalance">0</span> $ROX</strong></p>
+<input type="number" id="ethAmount" placeholder="ETH amount" step="0.001">
+<p class="preview" id="tokenPreview">You'll receive: 0 $ROX</p>
+<button id="contributeBtn" class="main-btn" disabled>Contribute ETH</button>
+</div>
+</div>
 
-        <!-- Staking Panel -->
-        <div class="bg-gray-800 p-4 rounded shadow">
-            <h2 class="text-lg font-semibold mb-2">Stake & Rewards</h2>
-            <input id="stakeAmount" type="number" placeholder="Amount to stake" class="w-full mb-2 p-2 rounded text-black"/>
-            <button id="stakeBtn" class="w-full bg-green-600 hover:bg-green-700 p-2 rounded mb-2">Stake</button>
-            <button id="claimBtn" class="w-full bg-yellow-600 hover:bg-yellow-700 p-2 rounded">Claim Rewards</button>
-            <div id="cooldown" class="mt-2 text-sm text-gray-300"></div>
-            <div id="pendingRewards" class="mt-2 text-sm"></div>
-        </div>
+<div id="staking" class="section">
+<h2>Staking</h2>
+<div class="card">
+<p class="stat">Staked: <strong><span id="stakedAmount">0</span> $ROX</strong></p>
+<p>Unlock: <span id="unlockTime">—</span></p>
+<input type="number" id="stakeAmount" placeholder="Amount">
+<button id="stakeBtn" class="main-btn" disabled>Stake</button>
+</div>
+</div>
 
-        <!-- Presale Progress -->
-        <div class="bg-gray-800 p-4 rounded shadow">
-            <h2 class="text-lg font-semibold mb-2">Presale Progress</h2>
-            <div class="w-full bg-gray-700 rounded h-4 mb-2">
-                <div id="presaleBar" class="bg-blue-500 h-4 rounded"></div>
-            </div>
-            <div id="presaleStats" class="text-sm"></div>
-        </div>
+<div id="rewards" class="section">
+<h2>Staking Rewards</h2>
+<div class="card">
+<p class="stat">Pending: <strong><span id="pendingRewards">0</span> $ROX</strong></p>
+<button id="claimRewardsBtn" class="main-btn" disabled>Claim Rewards</button>
+</div>
+</div>
 
-    </main>
+<div id="circulating" class="section">
+<h2>Circulating Supply</h2>
+<div class="card">
+<p style="font-size:2.5em; color:#FFD700;" id="circulatingSupply">Loading...</p>
+</div>
+</div>
 
+<div id="transparency" class="section">
+<h2>Transparency Vault</h2>
+<div class="card">
+<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Loading...</span> $ROX</strong></p>
+<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Loading...</span> $ROX</strong></p>
+<p class="stat">Contract Held (Presale + Rewards + Vested): <strong><span id="contractBalance">Loading...</span> $ROX</strong></p>
+<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Loading...</span> $ROX</strong></p>
+<p class="stat">Circulating Supply: <strong><span id="vaultCirculating">Loading...</span> $ROX</strong></p>
+<p style="text-align:center; color:#aaa;">All data direct from blockchain • Full transparency</p>
+</div>
+</div>
+
+<div id="holdersgrowth" class="section">
+<h2>Live Holders Growth</h2>
+<div class="card">
+<p style="font-size:3em; text-align:center; color:#FFD700;" id="holderCount">0</p>
+<p style="text-align:center; font-size:1.6em;">Current Holders</p>
+<canvas id="holderGrowthChart" height="200"></canvas>
+</div>
+</div>
+
+<div id="charts" class="section">
+<h2>Charts</h2>
+<div class="card">
+<canvas id="presaleChart" height="200"></canvas>
+</div>
+</div>
+
+<footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
