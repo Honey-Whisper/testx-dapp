@@ -32,6 +32,10 @@ input[type=number] { width:100%; padding:14px; border-radius:12px; background:rg
 .main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
 .main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }
 .stat { font-size:1.5em; margin:15px 0; }
+.progress { height:32px; background:rgba(255,255,255,0.3); border-radius:16px; overflow:hidden; position:relative; margin:20px 0; }
+.bar { height:100%; background:linear-gradient(to right,#fff,var(--gold)); width:0%; transition:width 1s; }
+.progress-text { position:absolute; width:100%; text-align:center; line-height:32px; color:#000; font-weight:bold; }
+.preview { font-size:1.3em; color:#00FF00; font-weight:bold; }
 canvas { background:#111; border-radius:16px; margin-top:20px; }
 footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
 </style>
@@ -130,8 +134,8 @@ Excludes locked rewards, vesting & team allocations<br>
 <div id="holdersgrowth" class="section">
 <h2>Live Holders Growth</h2>
 <div class="card">
-<p style="font-size:3em; text-align:center; color:#FFD700;" id="holderCount">0</p>
-<p style="text-align:center; font-size:1.6em;">Current Holders</p>
+<p style="font-size:3em; color:#FFD700;" id="holderCount">0</p>
+<p style="font-size:1.6em; color:#aaa;">Current Holders</p>
 <canvas id="holderGrowthChart" height="200"></canvas>
 </div>
 </div>
