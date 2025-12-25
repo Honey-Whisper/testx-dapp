@@ -1,4 +1,4 @@
-// app.js - Final Updated with Safe Circulating Supply
+// app.js - Final with Safe Circulating Supply
 
 const CONTRACT = window.ROX_CONTRACT_ADDRESS;
 const ABI = window.ROX_ABI;
@@ -6,8 +6,7 @@ const ABI = window.ROX_ABI;
 const TREASURY = "0xafee6142bDBb2ea7882Bfc60145E647FdA368A21".toLowerCase();
 const CAMPAIGN = "0xCa02FbFEF765E3d33c3e0094Ceb5017b1B9c6677".toLowerCase();
 
-// Constants from allocation
-const OWNER_VESTED_AMOUNT = ethers.utils.parseUnits("200000", 18); // 8% = 200k ROX
+const OWNER_VESTED_AMOUNT = ethers.utils.parseUnits("200000", 18); // 8% vested
 
 let provider, signer, contract, user;
 let holderCount = 0;
@@ -53,7 +52,7 @@ async function loadData() {
     try {
         const d = 18;
 
-        // User specific
+        // User data
         const bal = await contract.balanceOf(user);
         document.getElementById('userBalance').textContent = Number(ethers.utils.formatUnits(bal, d)).toFixed(0);
 
@@ -64,40 +63,34 @@ async function loadData() {
         const pending = await contract.calculatePendingRewards(user);
         document.getElementById('pendingRewards').textContent = Number(ethers.utils.formatUnits(pending, d)).toLocaleString();
 
-        // SAFE CIRCULATING SUPPLY
+        // Safe Circulating Supply
         const totalSupply = await contract.totalSupply();
-
         const contractBal = await contract.balanceOf(CONTRACT);
         const treasuryBal = await contract.balanceOf(TREASURY);
         const campaignBal = await contract.balanceOf(CAMPAIGN);
-        const vestedUnreleased = OWNER_VESTED_AMOUNT; // Early stage full unreleased
+        const vestedUnreleased = OWNER_VESTED_AMOUNT; // Assume full unreleased early
 
         const totalLocked = contractBal.add(treasuryBal).add(campaignBal).add(vestedUnreleased);
         const safeCirculating = totalSupply.sub(totalLocked);
-        const safeNum = Number(ethers.utils.formatUnits(safeCirculating, d));
+        const safeNum = Number(ethers.utils.formatUnits(safeCirculating, d)).toLocaleString();
 
         document.getElementById('circulatingSupply').innerHTML = `
-            <p style="font-size:3.5em; color:#FFD700; margin:10px 0; font-weight:bold;">
-                ${safeNum.toLocaleString()} $ROX
-            </p>
-            <p style="color:#0f0; font-size:1.3em;">Low circulating supply → Massive growth potential 🔥</p>
+            <p style="font-size:3em; color:#FFD700; margin:10px 0;">${safeNum} $ROX</p>
+            <p style="color:#0f0;">Low circulating → High growth potential 🔥</p>
         `;
 
-        document.getElementById('vaultCirculating').textContent = safeNum.toLocaleString() + ' $ROX';
+        document.getElementById('vaultCirculating').textContent = safeNum + ' $ROX';
 
-        // Transparency Vault (Full Truth)
+        // Transparency Vault
         document.getElementById('treasuryBalance').textContent = Number(ethers.utils.formatUnits(treasuryBal, d)).toLocaleString();
         document.getElementById('campaignBalance').textContent = Number(ethers.utils.formatUnits(campaignBal, d)).toLocaleString();
         document.getElementById('contractBalance').textContent = Number(ethers.utils.formatUnits(contractBal, d)).toLocaleString();
-        document.getElementById('ownerReleased').textContent = "0"; // Update if function available
+        document.getElementById('ownerReleased').textContent = "0"; // Early stage
 
         // Holders
         await updateHolders();
 
-    } catch (e) {
-        console.error(e);
-        document.getElementById('circulatingSupply').innerHTML = "<p style='color:#f66;'>Error loading data</p>";
-    }
+    } catch (e) { console.error(e); }
 }
 
 async function updateHolders() {
@@ -123,8 +116,6 @@ async function updateHolders() {
                 options: { responsive: true }
             });
         } else {
-            holderChart.data.labels = holderHistory.map(h => h.date);
-            holderChart.data.datasets[0].data = holderHistory.map(h => h.count);
             holderChart.update();
         }
     } catch (e) {
@@ -132,7 +123,7 @@ async function updateHolders() {
     }
 }
 
-// Navigation & Other Functions (same as before)
+// Navigation
 document.querySelectorAll('nav button').forEach(b => {
     b.onclick = () => {
         document.querySelectorAll('nav button').forEach(x => x.classList.remove('active'));
@@ -142,11 +133,13 @@ document.querySelectorAll('nav button').forEach(b => {
     };
 });
 
+// Presale Preview
 document.getElementById('ethAmount').oninput = () => {
     const eth = parseFloat(document.getElementById('ethAmount').value) || 0;
     document.getElementById('tokenPreview').textContent = `You'll receive: ${(eth * 8000).toFixed(0)} $ROX`;
 };
 
+// Contribute
 document.getElementById('contributeBtn').onclick = async () => {
     const eth = parseFloat(document.getElementById('ethAmount').value);
     if (!eth || eth <= 0) return alert("Enter valid amount");
@@ -158,6 +151,7 @@ document.getElementById('contributeBtn').onclick = async () => {
     } catch (e) { alert("Failed: " + e.message); }
 };
 
+// Stake
 document.getElementById('stakeBtn').onclick = async () => {
     const amt = parseFloat(document.getElementById('stakeAmount').value);
     if (!amt || amt <= 0) return alert("Enter amount");
@@ -169,6 +163,7 @@ document.getElementById('stakeBtn').onclick = async () => {
     } catch (e) { alert("Failed: " + e.message); }
 };
 
+// Claim Rewards
 document.getElementById('claimRewardsBtn').onclick = async () => {
     try {
         const tx = await contract.claimRewards();
