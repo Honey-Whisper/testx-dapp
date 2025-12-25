@@ -27,15 +27,11 @@ nav button { background:var(--glass); border:1px solid var(--gold); padding:14px
 nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }
 .section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }
 .section.active { display:block; }
-.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; }
+.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; text-align:center; }
 input[type=number] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; }
 .main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
 .main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }
 .stat { font-size:1.5em; margin:15px 0; }
-.progress { height:32px; background:rgba(255,255,255,0.3); border-radius:16px; overflow:hidden; position:relative; margin:20px 0; }
-.bar { height:100%; background:linear-gradient(to right,#fff,var(--gold)); width:0%; transition:width 1s; }
-.progress-text { position:absolute; width:100%; text-align:center; line-height:32px; color:#000; font-weight:bold; }
-.preview { font-size:1.3em; color:#00FF00; font-weight:bold; }
 canvas { background:#111; border-radius:16px; margin-top:20px; }
 footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
 </style>
@@ -98,10 +94,24 @@ Contract: 0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b
 </div>
 </div>
 
+<div id="vesting" class="section">
+<h2>Vesting</h2>
+<div class="card">
+<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">0</span> $ROX</strong></p>
+<p style="color:#aaa;">8% team allocation vesting over time • Safe & locked</p>
+</div>
+</div>
+
 <div id="circulating" class="section">
 <h2>Circulating Supply</h2>
 <div class="card">
-<p style="font-size:2.5em; color:#FFD700;" id="circulatingSupply">Loading...</p>
+<div id="circulatingSupply">
+<p style="font-size:1.2em; color:#aaa;">Loading safe circulating supply...</p>
+</div>
+<p style="font-size:1.1em; color:#aaa; margin-top:20px;">
+Excludes locked rewards, vesting & team allocations<br>
+<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>
+</p>
 </div>
 </div>
 
@@ -112,8 +122,8 @@ Contract: 0x45d1c787A0d86AE8d7FEa33412a5d80d86B7445b
 <p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Loading...</span> $ROX</strong></p>
 <p class="stat">Contract Held (Presale + Rewards + Vested): <strong><span id="contractBalance">Loading...</span> $ROX</strong></p>
 <p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Loading...</span> $ROX</strong></p>
-<p class="stat">Circulating Supply: <strong><span id="vaultCirculating">Loading...</span> $ROX</strong></p>
-<p style="text-align:center; color:#aaa;">All data direct from blockchain • Full transparency</p>
+<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Loading...</span> $ROX</strong></p>
+<p style="text-align:center; color:#aaa; font-size:1em;">All data live from blockchain • Full transparency guaranteed</p>
 </div>
 </div>
 
