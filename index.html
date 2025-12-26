@@ -313,5 +313,107 @@ if (document.getElementById('displayContract')) {
 <script src="charts-init.js"></script>
 <script src="airdrop-data.js"></script>
 <script src="airdrop-tasks.js"></script>
+<script>
+// Basic wallet connection
+let provider, signer;
+
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      const address = await signer.getAddress();
+
+      document.getElementById('walletAddress').textContent = address.slice(0, 6) + '...' + address.slice(-4);
+      document.getElementById('walletAddress').style.display = 'block';
+      document.getElementById('connectBtn').style.display = 'none';
+      document.getElementById('disconnectBtn').style.display = 'inline-block';
+
+      // Ab real contracts initialize karo
+      initContracts();
+
+    } catch (err) {
+      alert('Connection failed: ' + err.message);
+    }
+  } else {
+    alert('Please install MetaMask or another Web3 wallet.');
+  }
+}
+
+function disconnectWallet() {
+  provider = null;
+  signer = null;
+
+  document.getElementById('walletAddress').style.display = 'none';
+  document.getElementById('connectBtn').style.display = 'inline-block';
+  document.getElementById('disconnectBtn').style.display = 'none';
+
+  // Optional: Reset airdrop data
+  document.getElementById("userAirdropXP").innerText = "Connect wallet";
+  document.getElementById("airdropEligible").innerText = "Connect wallet";
+  document.getElementById("userAirdropRank").innerText = "-";
+}
+
+// Yeh hai asli naya function jo sab fix karta hai
+function initContracts() {
+  if (!signer) return;
+
+  // User address globally available
+  window.getUserAddress = async () => await signer.getAddress();
+
+  // Contract addresses (Base Sepolia Testnet)
+  window.AIRDROP_CONTRACT_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
+  window.ROX_TOKEN_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491"; // ROX token address
+
+  // Minimal ABI - jitne functions use ho rahe hain
+  const AIRDROP_ABI = [
+    "function dailyCheckin()",
+    "function claimWeeklyBonus()",
+    "function claimMonthlyBonus()",
+    "function claimHolderBonus()",
+    "function claimNFTBonus()",
+    "function claimCampaignBonus()",
+    "function claimAirdrop()",
+    "function xpOf(address) view returns (uint256)",
+    "function isEligible(address) view returns (bool)",
+    "function totalParticipants() view returns (uint256)",
+    "function getAllParticipants() view returns (address[])"
+  ];
+
+  // Real contract connect with signer
+  const contract = new ethers.Contract(window.AIRDROP_CONTRACT_ADDRESS, AIRDROP_ABI, signer);
+
+  // Global function banaya
+  window.airdropContract = () => contract;
+
+  // Connect hone ke turant baad data load
+  if (typeof loadAirdropData === "function") {
+    loadAirdropData();
+  }
+
+  console.log('✅ Airdrop contract successfully connected!');
+}
+
+// Event listeners
+document.getElementById('connectBtn').addEventListener('click', connectWallet);
+document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+
+// Navigation buttons
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(btn.dataset.section).classList.add('active');
+    btn.classList.add('active');
+  });
+});
+
+// Contract display
+if (document.getElementById('displayContract')) {
+  document.getElementById('displayContract').textContent = '0x3cf0...4683 (Airdrop Contract)';
+}
+</script>
+
 </body>
 </html>
