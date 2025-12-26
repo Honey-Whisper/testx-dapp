@@ -1,20 +1,20 @@
-// airdrop-data.js
+// airdrop-data.js (Fixed Version)
 
 async function loadAirdropData() {
   try {
     if (
       typeof window.airdropContract !== "function" ||
       typeof window.getUserAddress !== "function" ||
-      !window.getUserAddress()
+      !await window.getUserAddress()
     ) {
       console.log("Wallet not connected yet");
       return;
     }
 
     const contract = window.airdropContract();
-    const user = window.getUserAddress();
+    const user = await window.getUserAddress();
 
-    /* ---------------- Pool Balance ---------------- */
+    /* ---------------- Pool Balance (Clean) ---------------- */
     try {
       const token = new ethers.Contract(
         window.ROX_TOKEN_ADDRESS,
@@ -23,8 +23,8 @@ async function loadAirdropData() {
       );
 
       const bal = await token.balanceOf(window.AIRDROP_CONTRACT_ADDRESS);
-      document.getElementById("airdropPoolBalance").innerText =
-        ethers.utils.formatEther(bal);
+      const formattedBal = parseFloat(ethers.utils.formatEther(bal)).toLocaleString(); // Clean: 100,000 (no trailing zeros)
+      document.getElementById("airdropPoolBalance").innerText = formattedBal;
     } catch (e) {
       document.getElementById("airdropPoolBalance").innerText = "N/A";
     }
@@ -43,11 +43,10 @@ async function loadAirdropData() {
       document.getElementById("airdropParticipants").innerText = "N/A";
     }
 
-    /* ---------------- User XP ---------------- */
+    /* ---------------- User XP (Clean Integer) ---------------- */
     try {
       const xp = await contract.xpOf(user);
-      document.getElementById("userAirdropXP").innerText =
-        ethers.utils.formatUnits(xp || 0, 18);
+      document.getElementById("userAirdropXP").innerText = xp.toString(); // Clean: 505 (no decimals/zeros)
     } catch (e) {
       document.getElementById("userAirdropXP").innerText = "N/A";
     }
@@ -69,7 +68,7 @@ async function loadAirdropData() {
   }
 }
 
-/* ================= LEADERBOARD ================= */
+/* ================= LEADERBOARD (Clean XP) ================= */
 
 async function updateAirdropLeaderboard() {
   const div = document.getElementById("airdropLeaderboard");
@@ -112,18 +111,15 @@ async function updateAirdropLeaderboard() {
     let html = "";
     rows.slice(0, 50).forEach((r, i) => {
       const rank = i + 1;
-      const xp = Number(
-        ethers.utils.formatUnits(r.xp || 0, 18)
-      ).toFixed(0);
+      const xpClean = r.xp.toString(); // Clean integer: 505 (no formatUnits)
 
-      const short =
-        r.addr.slice(0, 6) + "..." + r.addr.slice(-4);
+      const short = r.addr.slice(0, 6) + "..." + r.addr.slice(-4);
 
-      if (r.addr === window.getUserAddress().toLowerCase()) {
+      if (r.addr === (await window.getUserAddress())?.toLowerCase()) {
         document.getElementById("userAirdropRank").innerText = rank;
       }
 
-      html += `<p><strong>#${rank}</strong> ${short} — ${xp} XP</p>`;
+      html += `<p><strong>#${rank}</strong> ${short} — ${xpClean} XP</p>`;
     });
 
     div.innerHTML = html;
