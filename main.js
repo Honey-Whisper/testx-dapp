@@ -1,11 +1,19 @@
 window.addEventListener('load', () => {
-    startCountdown();
-    initPrediction();
+    startCountdown(); // countdown.js
+    initPrediction(); // prediction.js
 
     if (window.ethereum) {
         window.ethereum.request({ method: 'eth_accounts' })
-            .then(accounts => accounts.length > 0 && connectWallet());
+            .then(accounts => {
+                if (accounts.length > 0) {
+                    connectWallet(); // direct call
+                }
+            })
+            .catch(console.error);
     }
 
-    setInterval(() => contract && loadAllData(), 60000);
+    // Refresh every minute
+    setInterval(() => {
+        if (typeof loadAllData === 'function') loadAllData();
+    }, 60000);
 });
