@@ -48,7 +48,12 @@ async function updateAirdropLeaderboard() {
       data.push({ addr, xp: xp });
     }
 
-    data.sort((a, b) => b.xp.sub(a.xp));
+    // YE LINE CHANGE KI – AB SAFE SORT (BigNumber compatible)
+    data.sort((a, b) => {
+      if (b.xp.gt(a.xp)) return -1;
+      if (a.xp.gt(b.xp)) return 1;
+      return 0;
+    });
 
     let html = "";
     data.slice(0, 50).forEach((entry, i) => {
