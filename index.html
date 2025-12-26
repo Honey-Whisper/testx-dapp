@@ -69,140 +69,12 @@ Contract: <span id="displayContract">Loading...</span>
 <button data-section="airdrop">Airdrop Campaign</button>
 </nav>
 
-<div id="presale" class="section active">
-<h2>Presale</h2>
-<div class="card">
-<p style="font-size:1.8em;">Presale Live Soon 🔥</p>
-<p>Presale details and buy button coming after testnet phase.</p>
-</div>
-</div>
-
-<div id="staking" class="section">
-<h2>Staking</h2>
-<div class="card">
-<p style="font-size:1.8em;">Staking Coming Soon</p>
-<p>High APY rewards for $ROX holders.</p>
-</div>
-</div>
-
-<div id="rewards" class="section">
-<h2>Staking Reward</h2>
-<div class="card">
-<p style="font-size:1.8em;">Claim Rewards</p>
-<p>Connect wallet to view and claim pending rewards.</p>
-</div>
-</div>
-
-<div id="vesting" class="section">
-<h2>Vesting</h2>
-<div class="card">
-<p style="font-size:1.8em;">Vesting Schedule</p>
-<p>Team and allocations vested for long-term alignment.</p>
-</div>
-</div>
-
-<div id="circulating" class="section">
-<h2>Circulating Supply</h2>
-<div class="card">
-<div id="circulatingSupply">
-<p style="font-size:1.2em; color:#aaa;">Connect wallet to load data...</p>
-</div>
-<p style="font-size:1.1em; color:#aaa; margin-top:20px;">
-Excludes locked rewards, vesting & team allocations<br>
-<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>
-</p>
-</div>
-</div>
-
-<div id="transparency" class="section">
-<h2>Transparency Vault</h2>
-<div class="card">
-<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>
-</div>
-</div>
-
-<div id="holdersgrowth" class="section">
-<h2>Holders Growth</h2>
-<div class="card">
-<p style="font-size:1.8em;">Holders Growth Chart</p>
-<p>Coming soon with live data.</p>
-</div>
-</div>
-
-<div id="tokenomics" class="section">
-<h2>Tokenomics</h2>
-<div class="card">
-<p style="font-size:1.8em;">Tokenomics Breakdown</p>
-<p>Full allocation chart coming soon.</p>
-</div>
-</div>
-
-<div id="charts" class="section">
-<h2>Charts</h2>
-<div class="card">
-<p style="font-size:1.8em;">Price & Volume Chart</p>
-<canvas id="priceChart" height="300"></canvas>
-<p>Live chart coming soon.</p>
-</div>
-</div>
-
-<div id="legacyvault" class="section">
-<h2>Legacy Vault – 1-Week Price Prediction Contest</h2>
-<div class="card">
-    <p>Predict $ROX launch price ($0.30 – $1.50) + your legacy message<br>
-    <strong>3,875 $ROX Prize Pool • Ends January 2, 2026</strong><br>
-    1st: 2,500 $ROX | 2nd: 1,250 $ROX | 3rd: 125 $ROX<br>
-    <strong>Limited supply → Massive 5x+ upside potential 🔥</strong></p>
-
-    <div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
-        <strong>Contest Ends In:</strong><br>
-        <span id="countdownTimer" style="font-size:1.5em;">Loading...</span>
-    </div>
-
-    <div style="background:#000; padding:15px; border-radius:12px; margin:20px 0; text-align:center; border:2px solid #FFD700;">
-        <p style="margin:5px 0; color:#FFD700; font-size:1.3em;"><strong>Rewards Locked On-Chain</strong></p>
-        <p style="margin:10px 0; font-size:2em; color:#00FF00;"><strong><span id="contestBalance">Connect wallet</span> $ROX</strong></p>
-        <a href="https://sepolia.basescan.org/address/0xb2637f913734304211fcc88be876e9097c5b818a" target="_blank">
-            <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>
-        </a>
-        <p style="margin-top:10px; color:#aaa;">3,875 $ROX funded • Immutable • Auto-payout</p>
-    </div>
-
-    <input type="number" id="predictPrice" placeholder="Price prediction (e.g. 0.88)" step="0.01" min="0.30" max="1.50">
-    <input type="text" id="predictMessage" placeholder="Your legacy message (optional)">
-    <button class="main-btn" id="predictBtn" disabled>Lock Prediction On-Chain</button>
-
-    <div id="predictionCard" style="display:none; background:linear-gradient(135deg,#FF8C00,#000); color:#fff; padding:40px; border-radius:24px; text-align:center; width:600px; margin:20px auto; border:4px solid #FFD700; font-family:Arial;">
-        <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" style="width:150px; border-radius:50%; border:4px solid #FFD700;">
-        <h1 style="font-size:2.5em; color:#FFD700;">$ROX Legacy Prediction</h1>
-        <p style="font-size:1.8em;">Wallet: <strong id="cardWallet">0x...</strong></p>
-        <p style="font-size:2.5em; color:#00FF00;">I predict: $<span id="cardPrice">0.88</span></p>
-        <p style="font-size:1.4em;" id="cardMessage">"Building the legacy 🔥"</p>
-        <p style="font-size:1.3em; color:#FFD700;">3,875 $ROX Prize Pool • 1-Week Contest</p>
-        <p style="font-size:1.2em;">Low supply → Massive upside potential</p>
-        <p style="font-size:1em;">honey-whisper.github.io/testx-dapp</p>
-    </div>
-
-    <button class="main-btn" id="shareCardBtn" disabled style="margin-top:20px;">Generate & Share My Card on X 🚀</button>
-
-    <div style="margin-top:30px;">
-        <p><strong>Total Entries:</strong> <span id="predictionCount">0</span></p>
-        <div id="predictionsList" style="max-height:400px; overflow-y:auto; text-align:left;"></div>
-    </div>
-</div>
-</div>
-
+<!-- ================= Airdrop Section ================= -->
 <div id="airdrop" class="section">
 <h2>Airdrop Campaign – 300,000 $ROX Pool</h2>
 <div class="card">
-    <p>Earn XP through tasks • Top 1000 ranked users get $ROX<br>
-    <strong>300,000 $ROX Total Rewards • NFT + Campaign Required</strong><br>
-    Rank 1–150: 500 $ROX | 151–800: 300 $ROX | 801–1000: 150 $ROX<br>
-    <strong>60% claim immediately • 40% locked 6 months with bonus</strong></p>
+    <p>Earn XP through tasks • Eligibility based on NFT + Price Prediction Campaign<br>
+    <strong>300,000 $ROX Total Rewards</strong></p>
 
     <div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
         <strong>Airdrop Pool Locked On-Chain</strong><br>
@@ -232,11 +104,12 @@ Excludes locked rewards, vesting & team allocations<br>
     </div>
 
     <div style="margin-top:30px;">
-        <p style="font-size:1.6em;"><strong>Live Leaderboard (Top 50)</strong></p>
-        <div id="airdropLeaderboard" style="max-height:500px; overflow-y:auto; text-align:left; background:#111; padding:15px; border-radius:12px;">
-            <p style="text-align:center; color:#aaa;">Connect wallet to load leaderboard</p>
+        <p style="font-size:1.6em;"><strong>Eligibility Tasks Status</strong></p>
+        <div id="eligibilityTasks" style="max-height:400px; overflow-y:auto; text-align:left; background:#111; padding:15px; border-radius:12px;">
+            <p id="nftTaskStatus">NFT Task: -</p>
+            <p id="campaignTaskStatus">Price Prediction Campaign: -</p>
         </div>
-        <button class="main-btn" id="refreshLeaderboardBtn" style="margin-top:10px;">Refresh Leaderboard</button>
+        <button class="main-btn" id="refreshEligibilityBtn" style="margin-top:10px;">Refresh Eligibility</button>
     </div>
 </div>
 </div>
@@ -244,7 +117,7 @@ Excludes locked rewards, vesting & team allocations<br>
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
 
-<!-- JS FILES (same as before) -->
+<!-- JS FILES -->
 <script src="abi.js"></script>
 <script src="constants.js"></script>
 <script src="wallet-connect.js"></script>
