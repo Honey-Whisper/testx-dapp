@@ -1,59 +1,99 @@
-if (window.signer) {
-    const airdrop = window.airdropContract();
-    const userBtnIds = {
-        dailyCheckinBtn: "dailyCheckin",
-        weeklyBonusBtn: "claimWeeklyBonus",
-        monthlyBonusBtn: "claimMonthlyBonus",
-        holderBonusBtn: "claimHolderBonus",
-        nftBonusBtn: "claimNFTBonus",
-        campaignBonusBtn: "claimCampaignBonus",
-        claimAirdropBtn: "claimAirdrop"
-    };
+// airdrop-tasks.js
 
-    // Attach click events for all task buttons
-    Object.keys(userBtnIds).forEach(btnId => {
-        const funcName = userBtnIds[btnId];
-        document.getElementById(btnId).addEventListener("click", async () => {
-            try {
-                const tx = await airdrop[funcName]();
-                await tx.wait();
-                loadAirdropData(); // refresh XP & eligibility after completion
-            } catch (err) {
-                console.error("Airdrop Task Error:", err);
-                alert("Transaction failed or rejected");
-            }
-        });
+function safeTask(handler) {
+  return async () => {
+    if (
+      typeof window.airdropContract !== "function" ||
+      typeof window.getUserAddress !== "function" ||
+      !window.getUserAddress()
+    ) {
+      alert("Pehle wallet connect karo");
+      return;
+    }
+
+    try {
+      const tx = await handler();
+      await tx.wait();
+      alert("Success 🎉");
+      loadAirdropData();
+    } catch (err) {
+      const msg =
+        err?.reason || err?.message || "Transaction failed";
+      alert(msg.split("(")[0]);
+      console.error(err);
+    }
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .getElementById("dailyCheckinBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().dailyCheckin()
+      )
+    );
+
+  document
+    .getElementById("weeklyBonusBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimWeeklyBonus()
+      )
+    );
+
+  document
+    .getElementById("monthlyBonusBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimMonthlyBonus()
+      )
+    );
+
+  document
+    .getElementById("holderBonusBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimHolderBonus()
+      )
+    );
+
+  document
+    .getElementById("nftBonusBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimNFTBonus()
+      )
+    );
+
+  document
+    .getElementById("campaignBonusBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimCampaignBonus()
+      )
+    );
+
+  document
+    .getElementById("claimAirdropBtn")
+    ?.addEventListener(
+      "click",
+      safeTask(() =>
+        window.airdropContract().claimAirdrop()
+      )
+    );
+
+  document
+    .getElementById("refreshLeaderboardBtn")
+    ?.addEventListener("click", () => {
+      if (typeof updateAirdropLeaderboard === "function") {
+        updateAirdropLeaderboard();
+      }
     });
-}
-
-// --------------------------
-// Sybil-proof Eligibility
-// --------------------------
-async function updateEligibility() {
-    if (!window.signer) return;
-
-    const airdrop = window.airdropContract();
-    const user = await window.signer.getAddress();
-
-    // NFT Task
-    const nftDone = await airdrop.xpOf(user) >= 500; // NFT task gives 500 XP
-    document.getElementById("nftTaskStatus").innerHTML = `NFT Task: <span style="color:${nftDone ? '#00FF00' : '#FF0000'};">${nftDone ? 'Completed' : 'Pending'}</span>`;
-
-    // Price Prediction Campaign Task
-    const campaignDone = await airdrop.isEligible(user); // checks if campaign task done
-    document.getElementById("campaignTaskStatus").innerHTML = `Price Prediction Campaign: <span style="color:${campaignDone ? '#00FF00' : '#FF0000'};">${campaignDone ? 'Completed' : 'Pending'}</span>`;
-
-    // Overall Eligibility
-    document.getElementById("airdropEligible").innerText = (nftDone && campaignDone) ? '✅ Eligible for Airdrop!' : '❌ Not eligible yet';
-
-    // Optionally enable claim button only if eligible
-    document.getElementById("claimAirdropBtn").disabled = !(nftDone && campaignDone);
-}
-
-// Attach refresh button
-document.getElementById("refreshEligibilityBtn").addEventListener("click", updateEligibility);
-
-// Auto load data on wallet connect
-window.addEventListener("walletConnected", () => {
-    loadAirdropData();
 });
