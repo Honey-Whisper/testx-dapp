@@ -10,6 +10,3 @@ const CAMPAIGN = "0xCa02FbFEF765E3d33c3e0094Ceb5017b1B9c6677".toLowerCase();
 
 const OWNER_VESTED_AMOUNT = ethers.utils.parseUnits("200000", 18); // 200,000 $ROX vested (adjust if different)
 
-// Airdrop Constants
-window.AIRDROP_CONTRACT_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
-window.AIRDROP_POOL_LINK = "https://sepolia.basescan.org/address/0x3cf099e1237272e6cd6591bd6460367a5d074683";
