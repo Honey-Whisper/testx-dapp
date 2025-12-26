@@ -1,10 +1,10 @@
-// ==== UPDATE THESE VALUES ONLY ====
+// ============ CONFIGURATION – UPDATE ONLY HERE ============
 
-window.ROX_CONTRACT_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491"; // Your main $ROX token contract
+window.ROX_CONTRACT_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491"; // Correct $ROX token contract
 
 window.PREDICTION_CONTRACT = "0xb2637f913734304211fcc88be876e9097c5b818a"; // Prediction contest contract
 
-// Paste the full ABI you shared earlier inside the brackets below
+// Paste your full fresh ABI exactly as provided (the long JSON array)
 window.ROX_ABI = [
 	{
 		"inputs": [],
@@ -838,12 +838,10 @@ window.ROX_ABI = [
 	}
 ];
 
-// If you have the prediction contract ABI, paste it here. Otherwise leave empty array.
+// If you get the prediction contract ABI later, paste it here
 window.PREDICTION_ABI = [];
 
-// Treasury & Campaign addresses (update only if they change)
+// Fixed wallets and vested amount
 const TREASURY = "0xafee6142bDBb2ea7882Bfc60145E647FdA368A21".toLowerCase();
 const CAMPAIGN = "0xCa02FbFEF765E3d33c3e0094Ceb5017b1B9c6677".toLowerCase();
-
-// Owner vested amount – change only if your contract uses different number
-const OWNER_VESTED_AMOUNT = ethers.utils.parseUnits("200000", 18); // 200,000 $ROX
+const OWNER_VESTED_AMOUNT = ethers.utils.parseUnits("200000", 18); // 200,000 $ROX (adjust if different)
