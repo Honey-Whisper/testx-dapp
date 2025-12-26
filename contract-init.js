@@ -1,10 +1,39 @@
-let contract, predictionContract, decimals = 18;
+// ROX Token
+window.roxTokenContract = () => {
+  if (!window.signer) return null;
+  return new ethers.Contract(
+    window.ROX_TOKEN_ADDRESS,
+    window.ROX_ABI,
+    window.signer
+  );
+};
 
-function initContracts() {
-    contract = new ethers.Contract(ROX_CONTRACT_ADDRESS, window.ROX_ABI, signer);
+// Airdrop
+window.airdropContract = () => {
+  if (!window.signer) return null;
+  return new ethers.Contract(
+    window.AIRDROP_CONTRACT_ADDRESS,
+    window.AIRDROP_ABI,
+    window.signer
+  );
+};
 
-    const minABI = ["function balanceOf(address) view returns (uint256)"];
-    predictionContract = new ethers.Contract(PREDICTION_CONTRACT, minABI, provider);
+// Campaign / Price Prediction
+window.campaignContract = () => {
+  if (!window.signer) return null;
+  return new ethers.Contract(
+    window.CAMPAIGN_CONTRACT_ADDRESS,
+    window.CAMPAIGN_ABI,
+    window.signer
+  );
+};
 
-    contract.decimals().then(d => decimals = d).catch(() => decimals = 18);
-}
+// Presale / Auto-Stake
+window.presaleContract = () => {
+  if (!window.signer) return null;
+  return new ethers.Contract(
+    window.PRESALE_CONTRACT_ADDRESS,
+    window.PRESALE_ABI,
+    window.signer
+  );
+};
