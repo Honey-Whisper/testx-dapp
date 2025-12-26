@@ -1,79 +1,35 @@
 // airdrop-tasks.js
-document.getElementById("dailyCheckinBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().dailyCheckin();
-    await tx.wait();
-    alert("Daily check-in successful! +5 XP");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
+function safeTask(handler) {
+  return async () => {
+    if (!window.airdropContract || !window.getUserAddress) {
+      alert("Wallet connect kar pehle bhai!");
+      return;
+    }
+
+    try {
+      const tx = await handler();
+      await tx.wait();
+      alert("Success! 🎉");
+      loadAirdropData();
+    } catch (err) {
+      const msg = err.reason || err.message || "Transaction failed";
+      alert("Failed: " + msg.split("(")[0]); // clean message
+      console.error(err);
+    }
+  };
+}
+
+// All tasks safe banaye
+document.getElementById("dailyCheckinBtn")?.addEventListener("click", safeTask(() => window.airdropContract().dailyCheckin()));
+document.getElementById("weeklyBonusBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimWeeklyBonus()));
+document.getElementById("monthlyBonusBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimMonthlyBonus()));
+document.getElementById("holderBonusBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimHolderBonus()));
+document.getElementById("nftBonusBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimNFTBonus()));
+document.getElementById("campaignBonusBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimCampaignBonus()));
+document.getElementById("claimAirdropBtn")?.addEventListener("click", safeTask(() => window.airdropContract().claimAirdrop()));
+
+document.getElementById("refreshLeaderboardBtn")?.addEventListener("click", () => {
+  if (typeof updateAirdropLeaderboard === "function") {
+    updateAirdropLeaderboard();
   }
 });
-
-document.getElementById("weeklyBonusBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimWeeklyBonus();
-    await tx.wait();
-    alert("Weekly bonus claimed! +30 XP");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("monthlyBonusBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimMonthlyBonus();
-    await tx.wait();
-    alert("Monthly bonus claimed! +80 XP");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("holderBonusBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimHolderBonus();
-    await tx.wait();
-    alert("Holder bonus claimed!");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("nftBonusBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimNFTBonus();
-    await tx.wait();
-    alert("NFT bonus claimed! +500 XP");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("campaignBonusBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimCampaignBonus();
-    await tx.wait();
-    alert("Campaign bonus claimed! +100 XP");
-    loadAirdropData();
-  } catch (err) {
-    alert("Failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("claimAirdropBtn")?.addEventListener("click", async () => {
-  try {
-    const tx = await window.airdropContract().claimAirdrop();
-    await tx.wait();
-    alert("Airdrop claimed! 60% received.");
-    loadAirdropData();
-  } catch (err) {
-    alert("Claim failed: " + (err.reason || err.message));
-  }
-});
-
-document.getElementById("refreshLeaderboardBtn")?.addEventListener("click", updateAirdropLeaderboard);
