@@ -1,4 +1,5 @@
-let provider, signer, user;
+// wallet-connect.js
+let provider, signer, userAddress;
 
 async function connectWallet() {
     if (!window.ethereum) {
@@ -8,20 +9,34 @@ async function connectWallet() {
 
     try {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
+
         provider = new ethers.providers.Web3Provider(window.ethereum);
         signer = provider.getSigner();
-        user = (await signer.getAddress()).toLowerCase();
+        userAddress = (await signer.getAddress()).toLowerCase();
 
-        initContracts(); // contracts setup
-        updateUIAfterConnect(); // UI changes
-        loadAllData(); // <-- Yeh line add ki – data load karega
+        // Initialize all contracts (including airdrop)
+        initContracts();
 
-        console.log("Connected & data loading:", user);
+        // Update UI after connect
+        updateUIAfterConnect();
+
+        // Load all data (prediction, transparency, airdrop, etc.)
+        loadAllData();
+
+        console.log("Wallet connected:", userAddress);
+        console.log("All contracts & data loaded!");
+
     } catch (err) {
         alert("Connect failed: " + err.message);
-        console.error(err);
+        console.error("Wallet connect error:", err);
     }
 }
 
-document.getElementById('connectBtn').onclick = connectWallet;
-document.getElementById('disconnectBtn').onclick = () => location.reload();
+// Make user address globally accessible
+window.getUserAddress = () => userAddress;
+window.getSigner = () => signer;
+window.getProvider = () => provider;
+
+// Disconnect – simple reload
+document.getElementById('connectBtn')?.addEventListener('click', connectWallet);
+document.getElementById('disconnectBtn')?.addEventListener('click', () => location.reload());
