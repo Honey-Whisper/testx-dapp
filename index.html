@@ -68,6 +68,39 @@ Contract: <span id="displayContract">Loading...</span>
 <button data-section="legacyvault">Legacy Vault 🔮</button>
 </nav>
 
+<!-- SAB SECTIONS WITH PLACEHOLDERS -->
+<div id="presale" class="section active">
+<h2>Presale</h2>
+<div class="card">
+<p style="font-size:1.8em;">Presale Live Soon 🔥</p>
+<p>Details coming after testnet phase.</p>
+</div>
+</div>
+
+<div id="staking" class="section">
+<h2>Staking</h2>
+<div class="card">
+<p style="font-size:1.8em;">Staking Coming Soon</p>
+<p>High APY rewards for holders.</p>
+</div>
+</div>
+
+<div id="rewards" class="section">
+<h2>Staking Reward</h2>
+<div class="card">
+<p style="font-size:1.8em;">Claim Rewards</p>
+<p>Rewards section – connect wallet to view pending.</p>
+</div>
+</div>
+
+<div id="vesting" class="section">
+<h2>Vesting</h2>
+<div class="card">
+<p style="font-size:1.8em;">Vesting Schedule</p>
+<p>Team & allocations vested for long-term alignment.</p>
+</div>
+</div>
+
 <div id="circulating" class="section">
 <h2>Circulating Supply</h2>
 <div class="card">
@@ -89,6 +122,29 @@ Excludes locked rewards, vesting & team allocations<br>
 <p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>
 <p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>
 <p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>
+</div>
+</div>
+
+<div id="holdersgrowth" class="section">
+<h2>Holders Growth</h2>
+<div class="card">
+<p style="font-size:1.8em;">Holders Chart Coming Soon</p>
+</div>
+</div>
+
+<div id="tokenomics" class="section">
+<h2>Tokenomics</h2>
+<div class="card">
+<p style="font-size:1.8em;">Tokenomics Breakdown</p>
+<p>Coming soon with full allocation chart.</p>
+</div>
+</div>
+
+<div id="charts" class="section">
+<h2>Charts</h2>
+<div class="card">
+<p style="font-size:1.8em;">Price Chart</p>
+<canvas id="priceChart"></canvas>
 </div>
 </div>
 
@@ -141,7 +197,7 @@ Excludes locked rewards, vesting & team allocations<br>
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
 
-<!-- MODULAR JS FILES – ORDER MATTERS -->
+<!-- JS FILES (no change) -->
 <script src="abi.js"></script>
 <script src="constants.js"></script>
 <script src="wallet-connect.js"></script>
