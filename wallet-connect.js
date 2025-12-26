@@ -12,12 +12,11 @@ async function connectWallet() {
         signer = provider.getSigner();
         user = (await signer.getAddress()).toLowerCase();
 
-        // Critical calls – contracts init, UI update, data load
-        initContracts();  // from contract-init.js
-        updateUIAfterConnect();  // from ui-update.js
-        loadAllData();  // from data-load.js
+        initContracts(); // contracts setup
+        updateUIAfterConnect(); // UI changes
+        loadAllData(); // <-- Yeh line add ki – data load karega
 
-        console.log("Connected:", user);
+        console.log("Connected & data loading:", user);
     } catch (err) {
         alert("Connect failed: " + err.message);
         console.error(err);
