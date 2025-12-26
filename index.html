@@ -56,16 +56,17 @@ Contract: <span id="displayContract">Loading...</span>
 </div>
 
 <nav>
-<button class="active" data-section="presale">Presale</button>
-<button data-section="staking">Staking</button>
-<button data-section="rewards">Staking Reward</button>
-<button data-section="vesting">Vesting</button>
-<button data-section="circulating">Circulating Supply</button>
-<button data-section="transparency">Transparency Vault</button>
-<button data-section="holdersgrowth">Holders Growth</button>
-<button data-section="tokenomics">Tokenomics</button>
-<button data-section="charts">Charts</button>
+<button class="active" data-section="presale">Presale 💰</button>
+<button data-section="staking">Staking 💸</button>
+<button data-section="rewards">Staking Reward 🎁</button>
+<button data-section="vesting">Vesting ⛓️</button>
+<button data-section="circulating">Circulating Supply ⚙️</button>
+<button data-section="transparency">Transparency Vault 💎</button>
+<button data-section="holdersgrowth">Holders Growth 💫</button>
+<button data-section="tokenomics">Tokenomics 🪙</button>
+<button data-section="charts">Charts 💹</button>
 <button data-section="legacyvault">Legacy Vault 🔮</button>
+<button data-section="airdrop">Airdrop Campaign</button>
 </nav>
 
 <div id="presale" class="section active">
@@ -195,6 +196,51 @@ Excludes locked rewards, vesting & team allocations<br>
 </div>
 </div>
 
+<div id="airdrop" class="section">
+<h2>Airdrop Campaign – 300,000 $ROX Pool</h2>
+<div class="card">
+    <p>Earn XP through tasks • Top 1000 ranked users get $ROX<br>
+    <strong>300,000 $ROX Total Rewards • NFT + Campaign Required</strong><br>
+    Rank 1–150: 500 $ROX | 151–800: 300 $ROX | 801–1000: 150 $ROX<br>
+    <strong>60% claim immediately • 40% locked 6 months with bonus</strong></p>
+
+    <div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
+        <strong>Airdrop Pool Locked On-Chain</strong><br>
+        <span style="font-size:1.5em;" id="airdropPoolBalance">Loading...</span> $ROX
+    </div>
+
+    <a href="https://sepolia.basescan.org/address/0x3cf099e1237272e6cd6591bd6460367a5d074683" target="_blank">
+        <button class="main-btn" style="padding:12px 30px;">Verify Pool on BaseScan 🔍</button>
+    </a>
+
+    <div style="margin:20px 0; text-align:left;">
+        <p><strong>Your Current XP:</strong> <span id="userAirdropXP" style="font-size:1.8em; color:#00FF00;">Connect wallet</span></p>
+        <p><strong>Your Current Rank:</strong> <span id="userAirdropRank" style="font-size:1.8em; color:#FFD700;">-</span></p>
+        <p><strong>Participants:</strong> <span id="airdropParticipants">0</span> / 1500 <span id="airdropFull" style="color:#FF0000; display:none;">(FULL!)</span></p>
+        <p><strong>Eligible?</strong> <span id="airdropEligible" style="font-size:1.4em;">Connect wallet</span></p>
+    </div>
+
+    <div style="background:rgba(255,215,0,0.2); padding:15px; border-radius:12px; margin:20px 0; border:2px dashed #FFD700;">
+        <p style="margin:5px 0;"><strong>Tasks Available:</strong></p>
+        <button class="main-btn" id="dailyCheckinBtn" style="margin:8px 0; padding:12px;">Daily Check-in (+5 XP)</button><br>
+        <button class="main-btn" id="weeklyBonusBtn" style="margin:8px 0; padding:12px;">Claim Weekly Streak (+30 XP)</button><br>
+        <button class="main-btn" id="monthlyBonusBtn" style="margin:8px 0; padding:12px;">Claim Monthly (+80 XP)</button><br>
+        <button class="main-btn" id="holderBonusBtn" style="margin:8px 0; padding:12px;">Claim Holder Bonus (up to +600 XP)</button><br>
+        <button class="main-btn" id="nftBonusBtn" style="margin:8px 0; padding:12px;">Claim NFT Bonus (+500 XP)</button><br>
+        <button class="main-btn" id="campaignBonusBtn" style="margin:8px 0; padding:12px;">Claim Campaign Bonus (+100 XP)</button><br>
+        <button class="main-btn" id="claimAirdropBtn" disabled style="margin:20px 0; font-size:1.4em; padding:16px;">Claim Your Airdrop (60% Now)</button>
+    </div>
+
+    <div style="margin-top:30px;">
+        <p style="font-size:1.6em;"><strong>Live Leaderboard (Top 50)</strong></p>
+        <div id="airdropLeaderboard" style="max-height:500px; overflow-y:auto; text-align:left; background:#111; padding:15px; border-radius:12px;">
+            <p style="text-align:center; color:#aaa;">Connect wallet to load leaderboard</p>
+        </div>
+        <button class="main-btn" id="refreshLeaderboardBtn" style="margin-top:10px;">Refresh Leaderboard</button>
+    </div>
+</div>
+</div>
+
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
 
@@ -219,6 +265,8 @@ Excludes locked rewards, vesting & team allocations<br>
 <script src="disconnect-button.js"></script>
 <script src="auto-refresh.js"></script>
 <script src="charts-init.js"></script>
+<script src="airdrop-data.js"></script>
+<script src="airdrop-tasks.js"></script>
 
 </body>
 </html>
