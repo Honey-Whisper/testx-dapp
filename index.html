@@ -43,7 +43,7 @@ footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
 </header>
 <div class="warning">
 ⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>
-Contract: <span id="displayContract">Loading...</span>
+Contract: <span id="displayContract">0x3cf0...4683 (Airdrop)</span>
 </div>
 <div style="text-align:center;padding:20px;">
 <button id="connectBtn">Connect Wallet</button>
@@ -63,123 +63,9 @@ Contract: <span id="displayContract">Loading...</span>
 <button data-section="legacyvault">Legacy Vault 🔮</button>
 <button data-section="airdrop">Airdrop Campaign</button>
 </nav>
-<div id="presale" class="section active">
-<h2>Presale</h2>
-<div class="card">
-<p style="font-size:1.8em;">Presale Live Soon 🔥</p>
-<p>Presale details and buy button coming after testnet phase.</p>
-</div>
-</div>
-<div id="staking" class="section">
-<h2>Staking</h2>
-<div class="card">
-<p style="font-size:1.8em;">Staking Coming Soon</p>
-<p>High APY rewards for $ROX holders.</p>
-</div>
-</div>
-<div id="rewards" class="section">
-<h2>Staking Reward</h2>
-<div class="card">
-<p style="font-size:1.8em;">Claim Rewards</p>
-<p>Connect wallet to view and claim pending rewards.</p>
-</div>
-</div>
-<div id="vesting" class="section">
-<h2>Vesting</h2>
-<div class="card">
-<p style="font-size:1.8em;">Vesting Schedule</p>
-<p>Team and allocations vested for long-term alignment.</p>
-</div>
-</div>
-<div id="circulating" class="section">
-<h2>Circulating Supply</h2>
-<div class="card">
-<div id="circulatingSupply">
-<p style="font-size:1.2em; color:#aaa;">Connect wallet to load data...</p>
-</div>
-<p style="font-size:1.1em; color:#aaa; margin-top:20px;">
-Excludes locked rewards, vesting & team allocations<br>
-<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>
-</p>
-</div>
-</div>
-<div id="transparency" class="section">
-<h2>Transparency Vault</h2>
-<div class="card">
-<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>
-<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>
-</div>
-</div>
-<div id="holdersgrowth" class="section">
-<h2>Holders Growth</h2>
-<div class="card">
-<p style="font-size:1.8em;">Holders Growth Chart</p>
-<p>Coming soon with live data.</p>
-</div>
-</div>
-<div id="tokenomics" class="section">
-<h2>Tokenomics</h2>
-<div class="card">
-<p style="font-size:1.8em;">Tokenomics Breakdown</p>
-<p>Full allocation chart coming soon.</p>
-</div>
-</div>
-<div id="charts" class="section">
-<h2>Charts</h2>
-<div class="card">
-<p style="font-size:1.8em;">Price & Volume Chart</p>
-<canvas id="priceChart" height="300"></canvas>
-<p>Live chart coming soon.</p>
-</div>
-</div>
-<div id="legacyvault" class="section">
-<h2>Legacy Vault – 1-Week Price Prediction Contest</h2>
-<div class="card">
-    <p>Predict $ROX launch price ($0.30 – $1.50) + your legacy message<br>
-    <strong>3,875 $ROX Prize Pool • Ends January 2, 2026</strong><br>
-    1st: 2,500 $ROX | 2nd: 1,250 $ROX | 3rd: 125 $ROX<br>
-    <strong>Limited supply → Massive 5x+ upside potential 🔥</strong></p>
-<div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
-    <strong>Contest Ends In:</strong><br>
-    <span id="countdownTimer" style="font-size:1.5em;">Loading...</span>
-</div>
 
-<div style="background:#000; padding:15px; border-radius:12px; margin:20px 0; text-align:center; border:2px solid #FFD700;">
-    <p style="margin:5px 0; color:#FFD700; font-size:1.3em;"><strong>Rewards Locked On-Chain</strong></p>
-    <p style="margin:10px 0; font-size:2em; color:#00FF00;"><strong><span id="contestBalance">Connect wallet</span> $ROX</strong></p>
-    <a href="https://sepolia.basescan.org/address/0xb2637f913734304211fcc88be876e9097c5b818a" target="_blank">
-        <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>
-    </a>
-    <p style="margin-top:10px; color:#aaa;">3,875 $ROX funded • Immutable • Auto-payout</p>
-</div>
+<!-- All your existing sections (presale to legacyvault) go here - keep them exactly as before -->
 
-<input type="number" id="predictPrice" placeholder="Price prediction (e.g. 0.88)" step="0.01" min="0.30" max="1.50">
-<input type="text" id="predictMessage" placeholder="Your legacy message (optional)">
-<button class="main-btn" id="predictBtn" disabled>Lock Prediction On-Chain</button>
-
-<div id="predictionCard" style="display:none; background:linear-gradient(135deg,#FF8C00,#000); color:#fff; padding:40px; border-radius:24px; text-align:center; width:600px; margin:20px auto; border:4px solid #FFD700; font-family:Arial;">
-    <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" style="width:150px; border-radius:50%; border:4px solid #FFD700;">
-    <h1 style="font-size:2.5em; color:#FFD700;">$ROX Legacy Prediction</h1>
-    <p style="font-size:1.8em;">Wallet: <strong id="cardWallet">0x...</strong></p>
-    <p style="font-size:2.5em; color:#00FF00;">I predict: $<span id="cardPrice">0.88</span></p>
-    <p style="font-size:1.4em;" id="cardMessage">"Building the legacy 🔥"</p>
-    <p style="font-size:1.3em; color:#FFD700;">3,875 $ROX Prize Pool • 1-Week Contest</p>
-    <p style="font-size:1.2em;">Low supply → Massive upside potential</p>
-    <p style="font-size:1em;">honey-whisper.github.io/testx-dapp</p>
-</div>
-
-<button class="main-btn" id="shareCardBtn" disabled style="margin-top:20px;">Generate & Share My Card on X 🚀</button>
-
-<div style="margin-top:30px;">
-    <p><strong>Total Entries:</strong> <span id="predictionCount">0</span></p>
-    <div id="predictionsList" style="max-height:400px; overflow-y:auto; text-align:left;"></div>
-</div>
-
-</div>
-</div>
 <div id="airdrop" class="section">
 <h2>Airdrop Campaign – 300,000 $ROX Pool</h2>
 <div class="card">
@@ -227,193 +113,172 @@ Excludes locked rewards, vesting & team allocations<br>
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
 
-<!-- Inline script to fix the "initContracts is not defined" error -->
 <script>
-// Basic wallet connection and dummy initContracts to prevent crash
-let provider, signer, contracts = {};
+let provider, signer, airdropContract, tokenContract, userAddress = null;
 
 async function connectWallet() {
-  if (window.ethereum) {
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const address = await signer.getAddress();
-      document.getElementById('walletAddress').textContent = address.slice(0, 6) + '...' + address.slice(-4);
-      document.getElementById('walletAddress').style.display = 'block';
-      document.getElementById('connectBtn').style.display = 'none';
-      document.getElementById('disconnectBtn').style.display = 'inline-block';
-      
-      // Dummy initContracts to prevent "not defined" error
-      initContracts();
-    } catch (err) {
-      alert('Connection failed: ' + err.message);
-    }
-  } else {
-    alert('Please install MetaMask or another Web3 wallet.');
-  }
-}
+  if (!window.ethereum) return alert('Please install MetaMask!');
+  try {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    userAddress = await signer.getAddress();
 
-function initContracts() {
-  // Placeholder - prevents the original error
-  console.log('Contracts initialized (dummy for testing)');
-  // You can expand this later with real contract ABIs and addresses from constants.js/abi.js
-  // For now, it just stops the JS error after connection
-}
+    document.getElementById('walletAddress').textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
+    document.getElementById('walletAddress').style.display = 'block';
+    document.getElementById('connectBtn').style.display = 'none';
+    document.getElementById('disconnectBtn').style.display = 'inline-block';
 
-function disconnectWallet() {
-  provider = null;
-  signer = null;
-  contracts = {};
-  document.getElementById('walletAddress').style.display = 'none';
-  document.getElementById('connectBtn').style.display = 'inline-block';
-  document.getElementById('disconnectBtn').style.display = 'none';
-}
-
-// Event listeners
-document.getElementById('connectBtn').addEventListener('click', connectWallet);
-document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
-
-// Simple nav switching (since many separate JS files may be missing/broken)
-document.querySelectorAll('nav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(btn.dataset.section).classList.add('active');
-    btn.classList.add('active');
-  });
-});
-
-// Dummy data loads to avoid blank sections (optional enhancement)
-if (document.getElementById('displayContract')) {
-  document.getElementById('displayContract').textContent = 'Testnet Phase (Loading...)';
-}
-</script>
-
-<!-- Keep original script includes in case some files are hosted correctly -->
-<script src="abi.js"></script>
-<script src="constants.js"></script>
-<script src="wallet-connect.js"></script>
-<script src="contract-init.js"></script>
-<script src="utils.js"></script>
-<script src="data-load.js"></script>
-<script src="countdown.js"></script>
-<script src="prediction.js"></script>
-<script src="ui-update.js"></script>
-<script src="main.js"></script>
-<script src="nav-switch.js"></script>
-<script src="presale-button.js"></script>
-<script src="staking-button.js"></script>
-<script src="rewards-button.js"></script>
-<script src="vested-owner-button.js"></script>
-<script src="vested-growth-button.js"></script>
-<script src="charts-update.js"></script>
-<script src="disconnect-button.js"></script>
-<script src="auto-refresh.js"></script>
-<script src="charts-init.js"></script>
-<script src="airdrop-data.js"></script>
-<script src="airdrop-tasks.js"></script>
-<script>
-// Basic wallet connection
-let provider, signer;
-
-async function connectWallet() {
-  if (window.ethereum) {
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      provider = new ethers.providers.Web3Provider(window.ethereum);
-      signer = provider.getSigner();
-      const address = await signer.getAddress();
-
-      document.getElementById('walletAddress').textContent = address.slice(0, 6) + '...' + address.slice(-4);
-      document.getElementById('walletAddress').style.display = 'block';
-      document.getElementById('connectBtn').style.display = 'none';
-      document.getElementById('disconnectBtn').style.display = 'inline-block';
-
-      // Ab real contracts initialize karo
-      initContracts();
-
-    } catch (err) {
-      alert('Connection failed: ' + err.message);
-    }
-  } else {
-    alert('Please install MetaMask or another Web3 wallet.');
+    initContractsAndLoad();
+  } catch (err) {
+    alert('Connection failed: ' + err.message);
   }
 }
 
 function disconnectWallet() {
-  provider = null;
-  signer = null;
-
+  provider = signer = airdropContract = tokenContract = userAddress = null;
   document.getElementById('walletAddress').style.display = 'none';
   document.getElementById('connectBtn').style.display = 'inline-block';
   document.getElementById('disconnectBtn').style.display = 'none';
 
-  // Optional: Reset airdrop data
-  document.getElementById("userAirdropXP").innerText = "Connect wallet";
-  document.getElementById("airdropEligible").innerText = "Connect wallet";
-  document.getElementById("userAirdropRank").innerText = "-";
+  // Reset placeholders
+  document.getElementById('userAirdropXP').innerText = 'Connect wallet';
+  document.getElementById('airdropEligible').innerText = 'Connect wallet';
+  document.getElementById('userAirdropRank').innerText = '-';
+  document.getElementById('airdropPoolBalance').innerText = 'Loading...';
+  document.getElementById('airdropLeaderboard').innerHTML = '<p style="text-align:center; color:#aaa;">Connect wallet to load leaderboard</p>';
 }
 
-// Yeh hai asli naya function jo sab fix karta hai
-function initContracts() {
-  if (!signer) return;
+function initContractsAndLoad() {
+  const AIRDROP_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
+  const ROX_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491";
 
-  // User address globally available
-  window.getUserAddress = async () => await signer.getAddress();
-
-  // Contract addresses (Base Sepolia Testnet)
-  window.AIRDROP_CONTRACT_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
-  window.ROX_TOKEN_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491"; // ROX token address
-
-  // Minimal ABI - jitne functions use ho rahe hain
   const AIRDROP_ABI = [
-    "function dailyCheckin()",
-    "function claimWeeklyBonus()",
-    "function claimMonthlyBonus()",
-    "function claimHolderBonus()",
-    "function claimNFTBonus()",
-    "function claimCampaignBonus()",
-    "function claimAirdrop()",
+    "function dailyCheckin() external",
+    "function claimWeeklyBonus() external",
+    "function claimMonthlyBonus() external",
+    "function claimHolderBonus() external",
+    "function claimNFTBonus() external",
+    "function claimCampaignBonus() external",
+    "function claimAirdrop() external",
     "function xpOf(address) view returns (uint256)",
     "function isEligible(address) view returns (bool)",
     "function totalParticipants() view returns (uint256)",
     "function getAllParticipants() view returns (address[])"
   ];
 
-  // Real contract connect with signer
-  const contract = new ethers.Contract(window.AIRDROP_CONTRACT_ADDRESS, AIRDROP_ABI, signer);
+  const TOKEN_ABI = ["function balanceOf(address) view returns (uint256)"];
 
-  // Global function banaya
-  window.airdropContract = () => contract;
+  airdropContract = new ethers.Contract(AIRDROP_ADDRESS, AIRDROP_ABI, signer);
+  tokenContract = new ethers.Contract(ROX_ADDRESS, TOKEN_ABI, provider);
 
-  // Connect hone ke turant baad data load
-  if (typeof loadAirdropData === "function") {
-    loadAirdropData();
-  }
-
-  console.log('✅ Airdrop contract successfully connected!');
+  loadAirdropData(); // Auto load after connect
 }
 
-// Event listeners
-document.getElementById('connectBtn').addEventListener('click', connectWallet);
-document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+async function loadAirdropData() {
+  if (!airdropContract || !userAddress) return;
 
-// Navigation buttons
+  try {
+    // Pool balance
+    const poolBal = await tokenContract.balanceOf(airdropContract.address);
+    document.getElementById('airdropPoolBalance').innerText = ethers.utils.formatEther(poolBal);
+
+    // User data
+    const xp = await airdropContract.xpOf(userAddress);
+    const eligible = await airdropContract.isEligible(userAddress);
+    const participants = await airdropContract.totalParticipants();
+
+    document.getElementById('userAirdropXP').innerText = xp.toString();
+    document.getElementById('airdropEligible').innerText = eligible ? 'Yes ✅' : 'No ❌';
+    document.getElementById('airdropParticipants').innerText = participants.toString();
+
+    // Load leaderboard + rank
+    await loadLeaderboard();
+  } catch (err) {
+    console.error(err);
+    alert('Error loading data: ' + err.message);
+  }
+}
+
+async function loadLeaderboard() {
+  if (!airdropContract) return;
+
+  try {
+    const participants = await airdropContract.getAllParticipants();
+    const entries = [];
+
+    for (let addr of participants) {
+      const xp = await airdropContract.xpOf(addr);
+      entries.push({ addr, xp: xp.toNumber() });
+    }
+
+    entries.sort((a, b) => b.xp - a.xp);
+
+    let html = '<ol>';
+    entries.slice(0, 50).forEach((e, i) => {
+      const short = e.addr.slice(0,6) + '...' + e.addr.slice(-4);
+      const you = e.addr.toLowerCase() === userAddress.toLowerCase() ? ' (You)' : '';
+      html += `<li><strong>#\( {i+1} \){you}</strong> ${short} — ${e.xp} XP</li>`;
+    });
+    html += '</ol>';
+
+    document.getElementById('airdropLeaderboard').innerHTML = html || '<p>No participants yet</p>';
+
+    // Update user rank
+    const userIndex = entries.findIndex(e => e.addr.toLowerCase() === userAddress.toLowerCase());
+    document.getElementById('userAirdropRank').innerText = userIndex >= 0 ? userIndex + 1 : '-';
+  } catch (err) {
+    document.getElementById('airdropLeaderboard').innerHTML = '<p>Error loading leaderboard</p>';
+  }
+}
+
+async function executeTask(methodName) {
+  if (!airdropContract) return alert('Connect wallet first!');
+  try {
+    const tx = await airdropContract[methodName]();
+    await tx.wait();
+    alert('Success! Transaction: ' + tx.hash);
+    loadAirdropData(); // Refresh everything
+  } catch (err) {
+    alert('Failed: ' + (err.reason || err.message || err));
+  }
+}
+
+// Countdown timer for contest
+setInterval(() => {
+  const end = new Date('2026-01-02T00:00:00Z');
+  const now = new Date();
+  const diff = end - now;
+  if (diff <= 0) {
+    document.getElementById('countdownTimer').innerText = 'Contest Ended';
+    return;
+  }
+  const d = Math.floor(diff / (1000*60*60*24));
+  const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+  document.getElementById('countdownTimer').innerText = `${d}d ${h}h ${m}m`;
+}, 60000);
+
+// Navigation
 document.querySelectorAll('nav button').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById(btn.dataset.section).classList.add('active');
     btn.classList.add('active');
   });
 });
 
-// Contract display
-if (document.getElementById('displayContract')) {
-  document.getElementById('displayContract').textContent = '0x3cf0...4683 (Airdrop Contract)';
-}
+// Event listeners
+document.getElementById('connectBtn').addEventListener('click', connectWallet);
+document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+document.getElementById('dailyCheckinBtn').addEventListener('click', () => executeTask('dailyCheckin'));
+document.getElementById('weeklyBonusBtn').addEventListener('click', () => executeTask('claimWeeklyBonus'));
+document.getElementById('monthlyBonusBtn').addEventListener('click', () => executeTask('claimMonthlyBonus'));
+document.getElementById('holderBonusBtn').addEventListener('click', () => executeTask('claimHolderBonus'));
+document.getElementById('nftBonusBtn').addEventListener('click', () => executeTask('claimNFTBonus'));
+document.getElementById('campaignBonusBtn').addEventListener('click', () => executeTask('claimCampaignBonus'));
+document.getElementById('refreshLeaderboardBtn').addEventListener('click', loadLeaderboard);
 </script>
-
 </body>
 </html>
