@@ -1,208 +1,317 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Rox Protocol ($ROX)</title>  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>  <style>  
-:root { --gold:#FFD700; --orange:#FF4500; --dark-orange:#FF8C00; --glass:rgba(255,140,0,0.3); }  
-body { margin:0; font-family:Segoe UI,Arial; background:linear-gradient(135deg,var(--dark-orange),var(--orange)); color:#fff; min-height:100vh; }  
-.container { max-width:960px; margin:auto; padding:20px; }  
-header { text-align:center; padding:60px 20px; background:var(--glass); border-radius:24px; border:2px solid var(--gold); }  
-.logo-img { width:300px; border-radius:50%; border:8px solid var(--gold); box-shadow:0 0 60px var(--orange); }  
-h1 { font-size:3.5em; color:#000; text-shadow:0 4px 12px #fff; }  
-.tagline { font-size:1.8em; }  
-.warning { background:#000; padding:20px; border-radius:12px; text-align:center; border:2px solid var(--gold); margin:20px 0; }  
-#connectBtn, #disconnectBtn { padding:18px 40px; font-size:1.6em; border:none; border-radius:50px; cursor:pointer; }  
-#connectBtn { background:linear-gradient(45deg,#fff,var(--gold)); color:#000; }  
-#disconnectBtn { background:#888; color:#fff; display:none; margin-left:10px; }  
-.wallet-address { font-size:1.4em; margin-top:15px; display:none; }  
-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:40px 0; }  
-nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; }  
-nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }  
-.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }  
-.section.active { display:block; }  
-.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; text-align:center; }  
-input[type=number], input[type=text] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; margin:10px 0; }  
-.main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }  
-.main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }  
-.stat { font-size:1.5em; margin:15px 0; }  
-canvas { background:#111; border-radius:16px; margin-top:20px; }  
-footer { text-align:center; padding:40px; color:#000; font-weight:bold; }  
-</style>  </head>  
-<body>  
-<div class="container">  
-<header>  
-<img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" class="logo-img" alt="Rox Logo">  
-<h1>Rox Protocol ($ROX)</h1>  
-<p class="tagline">Our goal is not speed — it is legacy.</p>  
-</header>  <div class="warning">  
-⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>  
-Contract: <span id="displayContract">Loading...</span>  
-</div>  <div style="text-align:center;padding:20px;">  
-<button id="connectBtn">Connect Wallet</button>  
-<button id="disconnectBtn">Disconnect Wallet</button>  
-<p class="wallet-address" id="walletAddress"></p>  
-</div>  <nav>  
-<button class="active" data-section="presale">Presale 💰</button>  
-<button data-section="staking">Staking 💸</button>  
-<button data-section="rewards">Staking Reward 🎁</button>  
-<button data-section="vesting">Vesting ⛓️</button>  
-<button data-section="circulating">Circulating Supply ⚙️</button>  
-<button data-section="transparency">Transparency Vault 💎</button>  
-<button data-section="holdersgrowth">Holders Growth 💫</button>  
-<button data-section="tokenomics">Tokenomics 🪙</button>  
-<button data-section="charts">Charts 💹</button>  
-<button data-section="legacyvault">Legacy Vault 🔮</button>  
-<button data-section="airdrop">Airdrop Campaign</button>  
-</nav>  <div id="presale" class="section active">  
-<h2>Presale</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Presale Live Soon 🔥</p>  
-<p>Presale details and buy button coming after testnet phase.</p>  
-</div>  
-</div>  <div id="staking" class="section">  
-<h2>Staking</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Staking Coming Soon</p>  
-<p>High APY rewards for $ROX holders.</p>  
-</div>  
-</div>  <div id="rewards" class="section">  
-<h2>Staking Reward</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Claim Rewards</p>  
-<p>Connect wallet to view and claim pending rewards.</p>  
-</div>  
-</div>  <div id="vesting" class="section">  
-<h2>Vesting</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Vesting Schedule</p>  
-<p>Team and allocations vested for long-term alignment.</p>  
-</div>  
-</div>  <div id="circulating" class="section">  
-<h2>Circulating Supply</h2>  
-<div class="card">  
-<div id="circulatingSupply">  
-<p style="font-size:1.2em; color:#aaa;">Connect wallet to load data...</p>  
-</div>  
-<p style="font-size:1.1em; color:#aaa; margin-top:20px;">  
-Excludes locked rewards, vesting & team allocations<br>  
-<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>  
-</p>  
-</div>  
-</div>  <div id="transparency" class="section">  
-<h2>Transparency Vault</h2>  
-<div class="card">  
-<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Connect wallet</span> $ROX</strong></p>  
-<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Connect wallet</span> $ROX</strong></p>  
-<p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>  
-<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>  
-<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>  
-</div>  
-</div>  <div id="holdersgrowth" class="section">  
-<h2>Holders Growth</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Holders Growth Chart</p>  
-<p>Coming soon with live data.</p>  
-</div>  
-</div>  <div id="tokenomics" class="section">  
-<h2>Tokenomics</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Tokenomics Breakdown</p>  
-<p>Full allocation chart coming soon.</p>  
-</div>  
-</div>  <div id="charts" class="section">  
-<h2>Charts</h2>  
-<div class="card">  
-<p style="font-size:1.8em;">Price & Volume Chart</p>  
-<canvas id="priceChart" height="300"></canvas>  
-<p>Live chart coming soon.</p>  
-</div>  
-</div>  <div id="legacyvault" class="section">  
-<h2>Legacy Vault – 1-Week Price Prediction Contest</h2>  
-<div class="card">  
-    <p>Predict $ROX launch price ($0.30 – $1.50) + your legacy message<br>  
-    <strong>3,875 $ROX Prize Pool • Ends January 2, 2026</strong><br>  
-    1st: 2,500 $ROX | 2nd: 1,250 $ROX | 3rd: 125 $ROX<br>  
-    <strong>Limited supply → Massive 5x+ upside potential 🔥</strong></p>  <div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">  
-    <strong>Contest Ends In:</strong><br>  
-    <span id="countdownTimer" style="font-size:1.5em;">Loading...</span>  
-</div>  
-
-<div style="background:#000; padding:15px; border-radius:12px; margin:20px 0; text-align:center; border:2px solid #FFD700;">  
-    <p style="margin:5px 0; color:#FFD700; font-size:1.3em;"><strong>Rewards Locked On-Chain</strong></p>  
-    <p style="margin:10px 0; font-size:2em; color:#00FF00;"><strong><span id="contestBalance">Connect wallet</span> $ROX</strong></p>  
-    <a href="https://sepolia.basescan.org/address/0xb2637f913734304211fcc88be876e9097c5b818a" target="_blank">  
-        <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>  
-    </a>  
-    <p style="margin-top:10px; color:#aaa;">3,875 $ROX funded • Immutable • Auto-payout</p>  
-</div>  
-
-<input type="number" id="predictPrice" placeholder="Price prediction (e.g. 0.88)" step="0.01" min="0.30" max="1.50">  
-<input type="text" id="predictMessage" placeholder="Your legacy message (optional)">  
-<button class="main-btn" id="predictBtn" disabled>Lock Prediction On-Chain</button>  
-
-<div id="predictionCard" style="display:none; background:linear-gradient(135deg,#FF8C00,#000); color:#fff; padding:40px; border-radius:24px; text-align:center; width:600px; margin:20px auto; border:4px solid #FFD700; font-family:Arial;">  
-    <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" style="width:150px; border-radius:50%; border:4px solid #FFD700;">  
-    <h1 style="font-size:2.5em; color:#FFD700;">$ROX Legacy Prediction</h1>  
-    <p style="font-size:1.8em;">Wallet: <strong id="cardWallet">0x...</strong></p>  
-    <p style="font-size:2.5em; color:#00FF00;">I predict: $<span id="cardPrice">0.88</span></p>  
-    <p style="font-size:1.4em;" id="cardMessage">"Building the legacy 🔥"</p>  
-    <p style="font-size:1.3em; color:#FFD700;">3,875 $ROX Prize Pool • 1-Week Contest</p>  
-    <p style="font-size:1.2em;">Low supply → Massive upside potential</p>  
-    <p style="font-size:1em;">honey-whisper.github.io/testx-dapp</p>  
-</div>  
-
-<button class="main-btn" id="shareCardBtn" disabled style="margin-top:20px;">Generate & Share My Card on X 🚀</button>  
-
-<div style="margin-top:30px;">  
-    <p><strong>Total Entries:</strong> <span id="predictionCount">0</span></p>  
-    <div id="predictionsList" style="max-height:400px; overflow-y:auto; text-align:left;"></div>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rox Protocol ($ROX)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root { --gold:#FFD700; --orange:#FF4500; --dark-orange:#FF8C00; --glass:rgba(255,140,0,0.3); }
+body { margin:0; font-family:Segoe UI,Arial; background:linear-gradient(135deg,var(--dark-orange),var(--orange)); color:#fff; min-height:100vh; }
+.container { max-width:960px; margin:auto; padding:20px; }
+header { text-align:center; padding:60px 20px; background:var(--glass); border-radius:24px; border:2px solid var(--gold); }
+.logo-img { width:300px; border-radius:50%; border:8px solid var(--gold); box-shadow:0 0 60px var(--orange); }
+h1 { font-size:3.5em; color:#000; text-shadow:0 4px 12px #fff; }
+.tagline { font-size:1.8em; }
+.warning { background:#000; padding:20px; border-radius:12px; text-align:center; border:2px solid var(--gold); margin:20px 0; }
+#connectBtn, #disconnectBtn { padding:18px 40px; font-size:1.6em; border:none; border-radius:50px; cursor:pointer; }
+#connectBtn { background:linear-gradient(45deg,#fff,var(--gold)); color:#000; }
+#disconnectBtn { background:#888; color:#fff; display:none; margin-left:10px; }
+.wallet-address { font-size:1.4em; margin-top:15px; display:none; }
+nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:40px 0; }
+nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; }
+nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }
+.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }
+.section.active { display:block; }
+.card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; text-align:center; }
+input[type=number], input[type=text] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; margin:10px 0; }
+.main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
+.main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }
+.stat { font-size:1.5em; margin:15px 0; }
+canvas { background:#111; border-radius:16px; margin-top:20px; }
+footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" class="logo-img" alt="Rox Logo">
+<h1>Rox Protocol ($ROX)</h1>
+<p class="tagline">Our goal is not speed — it is legacy.</p>
+</header>
+<div class="warning">
+⚠️ TESTING ON BASE SEPOLIA (TESTNET) ⚠️<br>
+Contract: <span id="displayContract">Loading...</span>
+</div>
+<div style="text-align:center;padding:20px;">
+<button id="connectBtn">Connect Wallet</button>
+<button id="disconnectBtn">Disconnect Wallet</button>
+<p class="wallet-address" id="walletAddress"></p>
+</div>
+<nav>
+<button class="active" data-section="presale">Presale 💰</button>
+<button data-section="staking">Staking 💸</button>
+<button data-section="rewards">Staking Reward 🎁</button>
+<button data-section="vesting">Vesting ⛓️</button>
+<button data-section="circulating">Circulating Supply ⚙️</button>
+<button data-section="transparency">Transparency Vault 💎</button>
+<button data-section="holdersgrowth">Holders Growth 💫</button>
+<button data-section="tokenomics">Tokenomics 🪙</button>
+<button data-section="charts">Charts 💹</button>
+<button data-section="legacyvault">Legacy Vault 🔮</button>
+<button data-section="airdrop">Airdrop Campaign</button>
+</nav>
+<div id="presale" class="section active">
+<h2>Presale</h2>
+<div class="card">
+<p style="font-size:1.8em;">Presale Live Soon 🔥</p>
+<p>Presale details and buy button coming after testnet phase.</p>
+</div>
+</div>
+<div id="staking" class="section">
+<h2>Staking</h2>
+<div class="card">
+<p style="font-size:1.8em;">Staking Coming Soon</p>
+<p>High APY rewards for $ROX holders.</p>
+</div>
+</div>
+<div id="rewards" class="section">
+<h2>Staking Reward</h2>
+<div class="card">
+<p style="font-size:1.8em;">Claim Rewards</p>
+<p>Connect wallet to view and claim pending rewards.</p>
+</div>
+</div>
+<div id="vesting" class="section">
+<h2>Vesting</h2>
+<div class="card">
+<p style="font-size:1.8em;">Vesting Schedule</p>
+<p>Team and allocations vested for long-term alignment.</p>
+</div>
+</div>
+<div id="circulating" class="section">
+<h2>Circulating Supply</h2>
+<div class="card">
+<div id="circulatingSupply">
+<p style="font-size:1.2em; color:#aaa;">Connect wallet to load data...</p>
+</div>
+<p style="font-size:1.1em; color:#aaa; margin-top:20px;">
+Excludes locked rewards, vesting & team allocations<br>
+<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>
+</p>
+</div>
+</div>
+<div id="transparency" class="section">
+<h2>Transparency Vault</h2>
+<div class="card">
+<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>
+</div>
+</div>
+<div id="holdersgrowth" class="section">
+<h2>Holders Growth</h2>
+<div class="card">
+<p style="font-size:1.8em;">Holders Growth Chart</p>
+<p>Coming soon with live data.</p>
+</div>
+</div>
+<div id="tokenomics" class="section">
+<h2>Tokenomics</h2>
+<div class="card">
+<p style="font-size:1.8em;">Tokenomics Breakdown</p>
+<p>Full allocation chart coming soon.</p>
+</div>
+</div>
+<div id="charts" class="section">
+<h2>Charts</h2>
+<div class="card">
+<p style="font-size:1.8em;">Price & Volume Chart</p>
+<canvas id="priceChart" height="300"></canvas>
+<p>Live chart coming soon.</p>
+</div>
+</div>
+<div id="legacyvault" class="section">
+<h2>Legacy Vault – 1-Week Price Prediction Contest</h2>
+<div class="card">
+    <p>Predict $ROX launch price ($0.30 – $1.50) + your legacy message<br>
+    <strong>3,875 $ROX Prize Pool • Ends January 2, 2026</strong><br>
+    1st: 2,500 $ROX | 2nd: 1,250 $ROX | 3rd: 125 $ROX<br>
+    <strong>Limited supply → Massive 5x+ upside potential 🔥</strong></p>
+<div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
+    <strong>Contest Ends In:</strong><br>
+    <span id="countdownTimer" style="font-size:1.5em;">Loading...</span>
 </div>
 
-</div>  
-</div>  <div id="airdrop" class="section">  
-<h2>Airdrop Campaign – 300,000 $ROX Pool</h2>  
-<div class="card">  
-    <p>Earn XP through tasks • Top 1000 ranked users get $ROX<br>  
-    <strong>300,000 $ROX Total Rewards • NFT + Campaign Required</strong><br>  
-    Rank 1–150: 500 $ROX | 151–800: 300 $ROX | 801–1000: 150 $ROX<br>  
-    <strong>60% claim immediately • 40% locked 6 months with bonus</strong></p>  <div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">  
-    <strong>Airdrop Pool Locked On-Chain</strong><br>  
-    <span style="font-size:1.5em;" id="airdropPoolBalance">Loading...</span> $ROX  
-</div>  
-
-<a href="https://sepolia.basescan.org/address/0x3cf099e1237272e6cd6591bd6460367a5d074683" target="_blank">  
-    <button class="main-btn" style="padding:12px 30px;">Verify Pool on BaseScan 🔍</button>  
-</a>  
-
-<div style="margin:20px 0; text-align:left;">  
-    <p><strong>Your Current XP:</strong> <span id="userAirdropXP" style="font-size:1.8em; color:#00FF00;">Connect wallet</span></p>  
-    <p><strong>Your Current Rank:</strong> <span id="userAirdropRank" style="font-size:1.8em; color:#FFD700;">-</span></p>  
-    <p><strong>Participants:</strong> <span id="airdropParticipants">0</span> / 1500 <span id="airdropFull" style="color:#FF0000; display:none;">(FULL!)</span></p>  
-    <p><strong>Eligible?</strong> <span id="airdropEligible" style="font-size:1.4em;">Connect wallet</span></p>  
-</div>  
-
-<div style="background:rgba(255,215,0,0.2); padding:15px; border-radius:12px; margin:20px 0; border:2px dashed #FFD700;">  
-    <p style="margin:5px 0;"><strong>Tasks Available:</strong></p>  
-    <button class="main-btn" id="dailyCheckinBtn" style="margin:8px 0; padding:12px;">Daily Check-in (+5 XP)</button><br>  
-    <button class="main-btn" id="weeklyBonusBtn" style="margin:8px 0; padding:12px;">Claim Weekly Streak (+30 XP)</button><br>  
-    <button class="main-btn" id="monthlyBonusBtn" style="margin:8px 0; padding:12px;">Claim Monthly (+80 XP)</button><br>  
-    <button class="main-btn" id="holderBonusBtn" style="margin:8px 0; padding:12px;">Claim Holder Bonus (up to +600 XP)</button><br>  
-    <button class="main-btn" id="nftBonusBtn" style="margin:8px 0; padding:12px;">Claim NFT Bonus (+500 XP)</button><br>  
-    <button class="main-btn" id="campaignBonusBtn" style="margin:8px 0; padding:12px;">Claim Campaign Bonus (+100 XP)</button><br>  
-    <button class="main-btn" id="claimAirdropBtn" disabled style="margin:20px 0; font-size:1.4em; padding:16px;">Claim Your Airdrop (60% Now)</button>  
-</div>  
-
-<div style="margin-top:30px;">  
-    <p style="font-size:1.6em;"><strong>Live Leaderboard (Top 50)</strong></p>  
-    <div id="airdropLeaderboard" style="max-height:500px; overflow-y:auto; text-align:left; background:#111; padding:15px; border-radius:12px;">  
-        <p style="text-align:center; color:#aaa;">Connect wallet to load leaderboard</p>  
-    </div>  
-    <button class="main-btn" id="refreshLeaderboardBtn" style="margin-top:10px;">Refresh Leaderboard</button>  
+<div style="background:#000; padding:15px; border-radius:12px; margin:20px 0; text-align:center; border:2px solid #FFD700;">
+    <p style="margin:5px 0; color:#FFD700; font-size:1.3em;"><strong>Rewards Locked On-Chain</strong></p>
+    <p style="margin:10px 0; font-size:2em; color:#00FF00;"><strong><span id="contestBalance">Connect wallet</span> $ROX</strong></p>
+    <a href="https://sepolia.basescan.org/address/0xb2637f913734304211fcc88be876e9097c5b818a" target="_blank">
+        <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>
+    </a>
+    <p style="margin-top:10px; color:#aaa;">3,875 $ROX funded • Immutable • Auto-payout</p>
 </div>
 
-</div>  
-</div>  <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>  
-</div>  <!-- JS FILES (same as before) -->  <script src="abi.js"></script>  <script src="constants.js"></script>  <script src="wallet-connect.js"></script>  <script src="contract-init.js"></script>  <script src="utils.js"></script>  <script src="data-load.js"></script>  <script src="countdown.js"></script>  <script src="prediction.js"></script>  <script src="ui-update.js"></script>  <script src="main.js"></script>  <script src="nav-switch.js"></script>  <script src="presale-button.js"></script>  <script src="staking-button.js"></script>  <script src="rewards-button.js"></script>  <script src="vested-owner-button.js"></script>  <script src="vested-growth-button.js"></script>  <script src="charts-update.js"></script>  <script src="disconnect-button.js"></script>  <script src="auto-refresh.js"></script>  <script src="charts-init.js"></script>  <script src="airdrop-data.js"></script>  <script src="airdrop-tasks.js"></script> 
+<input type="number" id="predictPrice" placeholder="Price prediction (e.g. 0.88)" step="0.01" min="0.30" max="1.50">
+<input type="text" id="predictMessage" placeholder="Your legacy message (optional)">
+<button class="main-btn" id="predictBtn" disabled>Lock Prediction On-Chain</button>
 
- </body>  
-</html>  
+<div id="predictionCard" style="display:none; background:linear-gradient(135deg,#FF8C00,#000); color:#fff; padding:40px; border-radius:24px; text-align:center; width:600px; margin:20px auto; border:4px solid #FFD700; font-family:Arial;">
+    <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" style="width:150px; border-radius:50%; border:4px solid #FFD700;">
+    <h1 style="font-size:2.5em; color:#FFD700;">$ROX Legacy Prediction</h1>
+    <p style="font-size:1.8em;">Wallet: <strong id="cardWallet">0x...</strong></p>
+    <p style="font-size:2.5em; color:#00FF00;">I predict: $<span id="cardPrice">0.88</span></p>
+    <p style="font-size:1.4em;" id="cardMessage">"Building the legacy 🔥"</p>
+    <p style="font-size:1.3em; color:#FFD700;">3,875 $ROX Prize Pool • 1-Week Contest</p>
+    <p style="font-size:1.2em;">Low supply → Massive upside potential</p>
+    <p style="font-size:1em;">honey-whisper.github.io/testx-dapp</p>
+</div>
+
+<button class="main-btn" id="shareCardBtn" disabled style="margin-top:20px;">Generate & Share My Card on X 🚀</button>
+
+<div style="margin-top:30px;">
+    <p><strong>Total Entries:</strong> <span id="predictionCount">0</span></p>
+    <div id="predictionsList" style="max-height:400px; overflow-y:auto; text-align:left;"></div>
+</div>
+
+</div>
+</div>
+<div id="airdrop" class="section">
+<h2>Airdrop Campaign – 300,000 $ROX Pool</h2>
+<div class="card">
+    <p>Earn XP through tasks • Top 1000 ranked users get $ROX<br>
+    <strong>300,000 $ROX Total Rewards • NFT + Campaign Required</strong><br>
+    Rank 1–150: 500 $ROX | 151–800: 300 $ROX | 801–1000: 150 $ROX<br>
+    <strong>60% claim immediately • 40% locked 6 months with bonus</strong></p>
+<div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
+    <strong>Airdrop Pool Locked On-Chain</strong><br>
+    <span style="font-size:1.5em;" id="airdropPoolBalance">Loading...</span> $ROX
+</div>
+
+<a href="https://sepolia.basescan.org/address/0x3cf099e1237272e6cd6591bd6460367a5d074683" target="_blank">
+    <button class="main-btn" style="padding:12px 30px;">Verify Pool on BaseScan 🔍</button>
+</a>
+
+<div style="margin:20px 0; text-align:left;">
+    <p><strong>Your Current XP:</strong> <span id="userAirdropXP" style="font-size:1.8em; color:#00FF00;">Connect wallet</span></p>
+    <p><strong>Your Current Rank:</strong> <span id="userAirdropRank" style="font-size:1.8em; color:#FFD700;">-</span></p>
+    <p><strong>Participants:</strong> <span id="airdropParticipants">0</span> / 1500 <span id="airdropFull" style="color:#FF0000; display:none;">(FULL!)</span></p>
+    <p><strong>Eligible?</strong> <span id="airdropEligible" style="font-size:1.4em;">Connect wallet</span></p>
+</div>
+
+<div style="background:rgba(255,215,0,0.2); padding:15px; border-radius:12px; margin:20px 0; border:2px dashed #FFD700;">
+    <p style="margin:5px 0;"><strong>Tasks Available:</strong></p>
+    <button class="main-btn" id="dailyCheckinBtn" style="margin:8px 0; padding:12px;">Daily Check-in (+5 XP)</button><br>
+    <button class="main-btn" id="weeklyBonusBtn" style="margin:8px 0; padding:12px;">Claim Weekly Streak (+30 XP)</button><br>
+    <button class="main-btn" id="monthlyBonusBtn" style="margin:8px 0; padding:12px;">Claim Monthly (+80 XP)</button><br>
+    <button class="main-btn" id="holderBonusBtn" style="margin:8px 0; padding:12px;">Claim Holder Bonus (up to +600 XP)</button><br>
+    <button class="main-btn" id="nftBonusBtn" style="margin:8px 0; padding:12px;">Claim NFT Bonus (+500 XP)</button><br>
+    <button class="main-btn" id="campaignBonusBtn" style="margin:8px 0; padding:12px;">Claim Campaign Bonus (+100 XP)</button><br>
+    <button class="main-btn" id="claimAirdropBtn" disabled style="margin:20px 0; font-size:1.4em; padding:16px;">Claim Your Airdrop (60% Now)</button>
+</div>
+
+<div style="margin-top:30px;">
+    <p style="font-size:1.6em;"><strong>Live Leaderboard (Top 50)</strong></p>
+    <div id="airdropLeaderboard" style="max-height:500px; overflow-y:auto; text-align:left; background:#111; padding:15px; border-radius:12px;">
+        <p style="text-align:center; color:#aaa;">Connect wallet to load leaderboard</p>
+    </div>
+    <button class="main-btn" id="refreshLeaderboardBtn" style="margin-top:10px;">Refresh Leaderboard</button>
+</div>
+
+</div>
+</div>
+<footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
+</div>
+
+<!-- Inline script to fix the "initContracts is not defined" error -->
+<script>
+// Basic wallet connection and dummy initContracts to prevent crash
+let provider, signer, contracts = {};
+
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      const address = await signer.getAddress();
+      document.getElementById('walletAddress').textContent = address.slice(0, 6) + '...' + address.slice(-4);
+      document.getElementById('walletAddress').style.display = 'block';
+      document.getElementById('connectBtn').style.display = 'none';
+      document.getElementById('disconnectBtn').style.display = 'inline-block';
+      
+      // Dummy initContracts to prevent "not defined" error
+      initContracts();
+    } catch (err) {
+      alert('Connection failed: ' + err.message);
+    }
+  } else {
+    alert('Please install MetaMask or another Web3 wallet.');
+  }
+}
+
+function initContracts() {
+  // Placeholder - prevents the original error
+  console.log('Contracts initialized (dummy for testing)');
+  // You can expand this later with real contract ABIs and addresses from constants.js/abi.js
+  // For now, it just stops the JS error after connection
+}
+
+function disconnectWallet() {
+  provider = null;
+  signer = null;
+  contracts = {};
+  document.getElementById('walletAddress').style.display = 'none';
+  document.getElementById('connectBtn').style.display = 'inline-block';
+  document.getElementById('disconnectBtn').style.display = 'none';
+}
+
+// Event listeners
+document.getElementById('connectBtn').addEventListener('click', connectWallet);
+document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+
+// Simple nav switching (since many separate JS files may be missing/broken)
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(btn.dataset.section).classList.add('active');
+    btn.classList.add('active');
+  });
+});
+
+// Dummy data loads to avoid blank sections (optional enhancement)
+if (document.getElementById('displayContract')) {
+  document.getElementById('displayContract').textContent = 'Testnet Phase (Loading...)';
+}
+</script>
+
+<!-- Keep original script includes in case some files are hosted correctly -->
+<script src="abi.js"></script>
+<script src="constants.js"></script>
+<script src="wallet-connect.js"></script>
+<script src="contract-init.js"></script>
+<script src="utils.js"></script>
+<script src="data-load.js"></script>
+<script src="countdown.js"></script>
+<script src="prediction.js"></script>
+<script src="ui-update.js"></script>
+<script src="main.js"></script>
+<script src="nav-switch.js"></script>
+<script src="presale-button.js"></script>
+<script src="staking-button.js"></script>
+<script src="rewards-button.js"></script>
+<script src="vested-owner-button.js"></script>
+<script src="vested-growth-button.js"></script>
+<script src="charts-update.js"></script>
+<script src="disconnect-button.js"></script>
+<script src="auto-refresh.js"></script>
+<script src="charts-init.js"></script>
+<script src="airdrop-data.js"></script>
+<script src="airdrop-tasks.js"></script>
+</body>
+</html>
