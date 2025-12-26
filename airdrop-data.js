@@ -1,128 +1,136 @@
 // airdrop-data.js
+
 async function loadAirdropData() {
-  if (!window.airdropContract || !window.getUserAddress) {
-    console.log("Wallet not connected yet");
-    return;
-  }
-
-  const contract = window.airdropContract();
-  const user = window.getUserAddress();
-
   try {
-    // Pool balance - safe call
-    let poolBalance = "0";
+    if (
+      typeof window.airdropContract !== "function" ||
+      typeof window.getUserAddress !== "function" ||
+      !window.getUserAddress()
+    ) {
+      console.log("Wallet not connected yet");
+      return;
+    }
+
+    const contract = window.airdropContract();
+    const user = window.getUserAddress();
+
+    /* ---------------- Pool Balance ---------------- */
     try {
-      const tokenContract = new ethers.Contract(
-        window.ROX_TOKEN_ADDRESS || "0x0000000000000000000000000000000000000000",
+      const token = new ethers.Contract(
+        window.ROX_TOKEN_ADDRESS,
         ["function balanceOf(address) view returns (uint256)"],
         contract.provider
       );
-      poolBalance = await tokenContract.balanceOf(window.AIRDROP_CONTRACT_ADDRESS || "0x0");
-      document.getElementById("airdropPoolBalance").innerText = ethers.utils.formatEther(poolBalance);
+
+      const bal = await token.balanceOf(window.AIRDROP_CONTRACT_ADDRESS);
+      document.getElementById("airdropPoolBalance").innerText =
+        ethers.utils.formatEther(bal);
     } catch (e) {
       document.getElementById("airdropPoolBalance").innerText = "N/A";
-      console.log("Pool balance failed (token/contract not ready)", e.message);
     }
 
-    // Participants
-    let participants = "0";
+    /* ---------------- Participants ---------------- */
     try {
-      participants = await contract.totalParticipants();
-      document.getElementById("airdropParticipants").innerText = participants.toString();
-      if (participants.gte(1500)) {
-        document.getElementById("airdropFull")?.style = "display: inline";
+      const participants = await contract.totalParticipants();
+      const pNum = Number(participants.toString());
+
+      document.getElementById("airdropParticipants").innerText = pNum;
+
+      if (pNum >= 1500) {
+        document.getElementById("airdropFull")?.style.display = "inline";
       }
     } catch (e) {
       document.getElementById("airdropParticipants").innerText = "N/A";
     }
 
-    // User XP
+    /* ---------------- User XP ---------------- */
     try {
       const xp = await contract.xpOf(user);
-      document.getElementById("userAirdropXP").innerText = ethers.utils.formatUnits(xp, 18);
+      document.getElementById("userAirdropXP").innerText =
+        ethers.utils.formatUnits(xp || 0, 18);
     } catch (e) {
       document.getElementById("userAirdropXP").innerText = "N/A";
     }
 
-    // Eligibility
+    /* ---------------- Eligibility ---------------- */
     try {
       const eligible = await contract.isEligible(user);
-      const elText = document.getElementById("airdropEligible");
-      elText.innerText = eligible ? "Yes" : "No";
-      elText.style.color = eligible ? "#00FF00" : "#FF0000";
+      const el = document.getElementById("airdropEligible");
+
+      el.innerText = eligible ? "Yes" : "No";
+      el.style.color = eligible ? "#00FF00" : "#FF4444";
     } catch (e) {
       document.getElementById("airdropEligible").innerText = "N/A";
     }
 
-    // Leaderboard
     await updateAirdropLeaderboard();
-
   } catch (err) {
-    console.error("Load airdrop data error:", err);
+    console.error("Airdrop load error:", err);
   }
 }
 
-async function updateAirdropLeaderboard() {
-  const leaderboardDiv = document.getElementById("airdropLeaderboard");
-  if (!leaderboardDiv) return;
+/* ================= LEADERBOARD ================= */
 
-  leaderboardDiv.innerHTML = "<p style='text-align:center; color:#aaa;'>Loading leaderboard...</p>";
+async function updateAirdropLeaderboard() {
+  const div = document.getElementById("airdropLeaderboard");
+  if (!div) return;
+
+  div.innerHTML =
+    "<p style='text-align:center;color:#aaa'>Loading leaderboard...</p>";
 
   try {
     const contract = window.airdropContract();
 
-    let allParticipants = [];
+    let participants;
     try {
-      allParticipants = await contract.getAllParticipants();
-    } catch (e) {
-      leaderboardDiv.innerHTML = "<p style='color:#ccc;'>Contract not deployed or wrong network</p>";
+      participants = await contract.getAllParticipants();
+      if (!Array.isArray(participants)) throw "Invalid list";
+    } catch {
+      div.innerHTML =
+        "<p style='color:#ccc'>Leaderboard not available</p>";
       return;
     }
 
-    if (!Array.isArray(allParticipants) || allParticipants.length === 0) {
-      leaderboardDiv.innerHTML = "<p>No participants yet</p>";
-      return;
-    }
+    const rows = [];
 
-    const data = [];
-    for (let addr of allParticipants) {
+    for (const addr of participants) {
       try {
         const xp = await contract.xpOf(addr);
-        data.push({ addr: addr.toLowerCase(), xp });
-      } catch (e) {
-        console.log("Failed to get XP for", addr);
-      }
+        rows.push({ addr: addr.toLowerCase(), xp });
+      } catch {}
     }
 
-    if (data.length === 0) {
-      leaderboardDiv.innerHTML = "<p>XP data not available</p>";
+    if (!rows.length) {
+      div.innerHTML = "<p>No participants yet</p>";
       return;
     }
 
-    // Safe sort
-    data.sort((a, b) => {
-      if (b.xp.gt(a.xp)) return -1;
-      if (a.xp.gt(b.xp)) return 1;
-      return 0;
-    });
+    rows.sort((a, b) =>
+      b.xp.gt(a.xp) ? 1 : a.xp.gt(b.xp) ? -1 : 0
+    );
 
     let html = "";
-    data.slice(0, 50).forEach((entry, i) => {
+    rows.slice(0, 50).forEach((r, i) => {
       const rank = i + 1;
-      const xpNum = Number(ethers.utils.formatUnits(entry.xp, 18)).toFixed(0);
-      const shortAddr = entry.addr.slice(0, 8) + "..." + entry.addr.slice(-6);
+      const xp = Number(
+        ethers.utils.formatUnits(r.xp || 0, 18)
+      ).toFixed(0);
 
-      if (entry.addr === window.getUserAddress()?.toLowerCase()) {
+      const short =
+        r.addr.slice(0, 6) + "..." + r.addr.slice(-4);
+
+      if (r.addr === window.getUserAddress().toLowerCase()) {
         document.getElementById("userAirdropRank").innerText = rank;
       }
 
-      html += `<p><strong>#${rank}</strong> ${shortAddr} — ${xpNum} XP</p>`;
+      html += `<p><strong>#${rank}</strong> ${short} — ${xp} XP</p>`;
     });
 
-    leaderboardDiv.innerHTML = html;
-  } catch (err) {
-    leaderboardDiv.innerHTML = "<p style='color:#ccc;'>Leaderboard unavailable – contract not ready</p>";
-    console.error("Leaderboard error:", err);
+    div.innerHTML = html;
+  } catch (e) {
+    div.innerHTML =
+      "<p style='color:#ccc'>Leaderboard error</p>";
+    console.error(e);
   }
 }
 
