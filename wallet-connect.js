@@ -12,11 +12,15 @@ async function connectWallet() {
         signer = provider.getSigner();
         user = (await signer.getAddress()).toLowerCase();
 
-        initContracts();
-        updateUIAfterConnect();
-        loadAllData();
+        // Yeh line add ki – contracts init aur UI update pehle
+        initContracts(); // contract-init.js se
+        updateUIAfterConnect(); // ui-update.js se
+        loadAllData(); // data-load.js se
+
+        console.log("Wallet connected successfully:", user);
     } catch (err) {
         alert("Connect nahi hua: " + err.message);
+        console.error(err);
     }
 }
 
