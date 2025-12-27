@@ -64,7 +64,8 @@ Contract: <span id="displayContract">0x3cf0...4683 (Airdrop)</span>
 <button data-section="airdrop">Airdrop Campaign</button>
 </nav>
 
-<!-- All your existing sections (presale to legacyvault) go here - keep them exactly as before -->
+<!-- Your other sections here (presale, staking, rewards, vesting, circulating, transparency, holdersgrowth, tokenomics, charts, legacyvault) -->
+<!-- Keep them exactly as before -->
 
 <div id="airdrop" class="section">
 <h2>Airdrop Campaign – 300,000 $ROX Pool</h2>
@@ -179,20 +180,21 @@ async function loadAirdropData() {
   if (!airdropContract || !userAddress) return;
 
   try {
-    // Pool balance
+    // Pool balance - clean
     const poolBal = await tokenContract.balanceOf(airdropContract.address);
-    document.getElementById('airdropPoolBalance').innerText = ethers.utils.formatEther(poolBal);
+    const poolClean = parseFloat(ethers.utils.formatEther(poolBal)).toLocaleString(undefined, {maximumFractionDigits: 0});
+    document.getElementById('airdropPoolBalance').innerText = poolClean;
 
-    // User data
+    // User XP - clean integer
     const xp = await airdropContract.xpOf(userAddress);
+    document.getElementById('userAirdropXP').innerText = xp.toString();
+
     const eligible = await airdropContract.isEligible(userAddress);
     const participants = await airdropContract.totalParticipants();
 
-    document.getElementById('userAirdropXP').innerText = xp.toString();
     document.getElementById('airdropEligible').innerText = eligible ? 'Yes ✅' : 'No ❌';
     document.getElementById('airdropParticipants').innerText = participants.toString();
 
-    // Load leaderboard + rank
     await loadLeaderboard();
   } catch (err) {
     console.error(err);
@@ -209,10 +211,10 @@ async function loadLeaderboard() {
 
     for (let addr of participants) {
       const xp = await airdropContract.xpOf(addr);
-      entries.push({ addr, xp: xp.toNumber() });
+      entries.push({ addr, xp: xp.toString() }); // Clean string
     }
 
-    entries.sort((a, b) => b.xp - a.xp);
+    entries.sort((a, b) => BigInt(b.xp) - BigInt(a.xp));
 
     let html = '<ol>';
     entries.slice(0, 50).forEach((e, i) => {
@@ -238,35 +240,44 @@ async function executeTask(methodName) {
     const tx = await airdropContract[methodName]();
     await tx.wait();
     alert('Success! Transaction: ' + tx.hash);
-    loadAirdropData(); // Refresh everything
+    loadAirdropData(); // Refresh
   } catch (err) {
     alert('Failed: ' + (err.reason || err.message || err));
   }
 }
 
-// Countdown timer for contest
-setInterval(() => {
-  const end = new Date('2026-01-02T00:00:00Z');
-  const now = new Date();
-  const diff = end - now;
-  if (diff <= 0) {
-    document.getElementById('countdownTimer').innerText = 'Contest Ended';
-    return;
-  }
-  const d = Math.floor(diff / (1000*60*60*24));
-  const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-  const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-  document.getElementById('countdownTimer').innerText = `${d}d ${h}h ${m}m`;
-}, 60000);
+// Countdown timer
+const countdownElement = document.getElementById('countdownTimer');
+if (countdownElement) {
+  setInterval(() => {
+    const end = new Date('2026-01-02T00:00:00Z');
+    const now = new Date();
+    const diff = end - now;
+    if (diff <= 0) {
+      countdownElement.innerText = 'Contest Ended';
+      return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    countdownElement.innerText = `${d}d ${h}h ${m}m`;
+  }, 60000);
+}
 
-// Navigation
+// Navigation - Fully working
 document.querySelectorAll('nav button').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(btn.dataset.section).classList.add('active');
+    const section = document.getElementById(btn.dataset.section);
+    if (section) section.classList.add('active');
     btn.classList.add('active');
   });
+});
+
+// Default to Presale on load
+window.addEventListener('load', () => {
+  document.querySelector('nav button[data-section="presale"]')?.click();
 });
 
 // Event listeners
