@@ -21,19 +21,17 @@ h1 { font-size:3.5em; color:#000; text-shadow:0 4px 12px #fff; }
 #disconnectBtn { background:#888; color:#fff; display:none; margin-left:10px; }
 .wallet-address { font-size:1.4em; margin-top:15px; display:none; }
 nav { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:40px 0; }
-nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; }
+nav button { background:var(--glass); border:1px solid var(--gold); padding:14px 28px; border-radius:50px; color:#fff; cursor:pointer; font-size:1.1em; }
 nav button.active { background:linear-gradient(var(--gold),#fff); color:#000; }
-.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); }
+.section { display:none; background:#000; border-radius:24px; padding:30px; border:2px solid var(--gold); margin-bottom:30px; }
 .section.active { display:block; }
 .card { background:rgba(0,0,0,0.9); border-radius:18px; padding:24px; border:1px solid var(--gold); margin-bottom:20px; text-align:center; }
 input[type=number], input[type=text] { width:100%; padding:14px; border-radius:12px; background:rgba(255,255,255,0.2); color:#fff; font-size:1.1em; border:none; margin:10px 0; }
 .main-btn { background:linear-gradient(var(--gold),#fff); color:#000; padding:16px; font-size:1.3em; width:100%; margin-top:10px; border:none; border-radius:12px; cursor:pointer; font-weight:bold; }
 .main-btn:disabled { background:#888; cursor:not-allowed; opacity:0.6; }
-.stat { font-size:1.5em; margin:15px 0; }
-canvas { background:#111; border-radius:16px; margin-top:20px; }
-.pool-box { background:#000; padding:15px; border-radius:12px; border:2px solid var(--green); text-align:center; margin:20px 0; }
-.pool-amount { font-size:2.2em; font-weight:bold; color:var(--green); }
-.compulsory { background:rgba(0,255,0,0.15); border:2px dashed var(--green); padding:15px; border-radius:12px; margin:20px 0; }
+.pool-box { background:#000; padding:20px; border-radius:12px; border:2px solid var(--green); text-align:center; margin:20px 0; }
+.pool-amount { font-size:2.5em; font-weight:bold; color:var(--green); }
+.compulsory { background:rgba(0,255,0,0.15); border:2px solid var(--green); padding:20px; border-radius:12px; margin:30px 0; }
 .sybil-box { background:rgba(255,215,0,0.15); border:2px solid var(--gold); padding:20px; border-radius:12px; margin:30px 0; }
 footer { text-align:center; padding:40px; color:#000; font-weight:bold; }
 </style>
@@ -68,183 +66,177 @@ Contract: <span id="displayContract">0x3cf0...4683 (Airdrop)</span>
 <button data-section="airdrop">Airdrop Campaign</button>
 </nav>
 
-<!-- Other sections same as before -->
+<div id="presale" class="section active">
+<h2>Presale</h2>
+<div class="card">
+<p style="font-size:1.8em;">Presale Live Soon 🔥</p>
+<p>Presale details and buy button coming after testnet phase.</p>
+</div>
+</div>
+
+<div id="staking" class="section">
+<h2>Staking</h2>
+<div class="card">
+<p style="font-size:1.8em;">Staking Coming Soon</p>
+<p>High APY rewards for $ROX holders.</p>
+</div>
+</div>
+
+<div id="rewards" class="section">
+<h2>Staking Reward</h2>
+<div class="card">
+<p style="font-size:1.8em;">Claim Rewards</p>
+<p>Connect wallet to view and claim pending rewards.</p>
+</div>
+</div>
+
+<div id="vesting" class="section">
+<h2>Vesting</h2>
+<div class="card">
+<p style="font-size:1.8em;">Vesting Schedule</p>
+<p>Team and allocations vested for long-term alignment.</p>
+</div>
+</div>
+
+<div id="circulating" class="section">
+<h2>Circulating Supply</h2>
+<div class="card">
+<p style="font-size:1.2em; color:#aaa;">Connect wallet to load data...</p>
+<p style="font-size:1.1em; color:#aaa; margin-top:20px;">
+Excludes locked rewards, vesting & team allocations<br>
+<span style="color:#0f0;">Low circulating → High growth potential 🔥</span>
+</p>
+</div>
+</div>
+
+<div id="transparency" class="section">
+<h2>Transparency Vault</h2>
+<div class="card">
+<p class="stat">Treasury Wallet: <strong><span id="treasuryBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Campaign Wallet: <strong><span id="campaignBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Contract Held: <strong><span id="contractBalance">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Owner Vested Released: <strong><span id="ownerReleased">Connect wallet</span> $ROX</strong></p>
+<p class="stat">Public Circulating Supply: <strong><span id="vaultCirculating">Connect wallet</span> $ROX</strong></p>
+</div>
+</div>
+
+<div id="holdersgrowth" class="section">
+<h2>Holders Growth</h2>
+<div class="card">
+<p style="font-size:1.8em;">Holders Growth Chart</p>
+<p>Coming soon with live data.</p>
+</div>
+</div>
+
+<div id="tokenomics" class="section">
+<h2>Tokenomics</h2>
+<div class="card">
+<p style="font-size:1.8em;">Tokenomics Breakdown</p>
+<p>Full allocation chart coming soon.</p>
+</div>
+</div>
+
+<div id="charts" class="section">
+<h2>Charts</h2>
+<div class="card">
+<p style="font-size:1.8em;">Price & Volume Chart</p>
+<canvas id="priceChart" height="300"></canvas>
+<p>Live chart coming soon.</p>
+</div>
+</div>
+
+<div id="legacyvault" class="section">
+<h2>Legacy Vault – 1-Week Price Prediction Contest</h2>
+<div class="card">
+    <p>Predict $ROX launch price ($0.30 – $1.50) + your legacy message<br>
+    <strong>3,875 $ROX Prize Pool • Ends January 2, 2026</strong><br>
+    1st: 2,500 $ROX | 2nd: 1,250 $ROX | 3rd: 125 $ROX<br>
+    <strong>Limited supply → Massive 5x+ upside potential 🔥</strong></p>
+<div style="background:#000; padding:10px; border-radius:12px; margin:15px 0; color:#FFD700; text-align:center;">
+    <strong>Contest Ends In:</strong><br>
+    <span id="countdownTimer" style="font-size:1.5em;">Loading...</span>
+</div>
+
+<div style="background:#000; padding:15px; border-radius:12px; margin:20px 0; text-align:center; border:2px solid #FFD700;">
+    <p style="margin:5px 0; color:#FFD700; font-size:1.3em;"><strong>Rewards Locked On-Chain</strong></p>
+    <p style="margin:10px 0; font-size:2em; color:#00FF00;"><strong><span id="contestBalance">Connect wallet</span> $ROX</strong></p>
+    <a href="https://sepolia.basescan.org/address/0xb2637f913734304211fcc88be876e9097c5b818a" target="_blank">
+        <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>
+    </a>
+    <p style="margin-top:10px; color:#aaa;">3,875 $ROX funded • Immutable • Auto-payout</p>
+</div>
+
+<input type="number" id="predictPrice" placeholder="Price prediction (e.g. 0.88)" step="0.01" min="0.30" max="1.50">
+<input type="text" id="predictMessage" placeholder="Your legacy message (optional)">
+<button class="main-btn" id="predictBtn" disabled>Lock Prediction On-Chain</button>
+
+<div id="predictionCard" style="display:none; background:linear-gradient(135deg,#FF8C00,#000); color:#fff; padding:40px; border-radius:24px; text-align:center; width:600px; margin:20px auto; border:4px solid #FFD700;">
+    <img src="https://cdn.discordapp.com/attachments/1295797949774135326/1319930299171188766/image.png" style="width:150px; border-radius:50%; border:4px solid #FFD700;">
+    <h1 style="font-size:2.5em; color:#FFD700;">$ROX Legacy Prediction</h1>
+    <p style="font-size:1.8em;">Wallet: <strong id="cardWallet">0x...</strong></p>
+    <p style="font-size:2.5em; color:#00FF00;">I predict: $<span id="cardPrice">0.88</span></p>
+    <p style="font-size:1.4em;" id="cardMessage">"Building the legacy 🔥"</p>
+    <p style="font-size:1.3em; color:#FFD700;">3,875 $ROX Prize Pool • 1-Week Contest</p>
+    <p style="font-size:1.2em;">Low supply → Massive upside potential</p>
+    <p style="font-size:1em;">honey-whisper.github.io/testx-dapp</p>
+</div>
+
+<button class="main-btn" id="shareCardBtn" disabled style="margin-top:20px;">Generate & Share My Card on X 🚀</button>
+
+<div style="margin-top:30px;">
+    <p><strong>Total Entries:</strong> <span id="predictionCount">0</span></p>
+    <div id="predictionsList" style="max-height:400px; overflow-y:auto; text-align:left;"></div>
+</div>
+</div>
+</div>
 
 <div id="airdrop" class="section">
 <h2>Airdrop Campaign</h2>
 <div class="card">
-    <p>Earn XP by completing tasks below. Top 1,000 ranked participants will share the airdrop rewards.</p>
+    <p>Join the $ROX Airdrop Campaign and earn rewards by completing tasks. The top 1,000 participants by XP will share the airdrop pool.</p>
     <div class="pool-box">
-        <strong>Total Airdrop Pool Locked On-Chain</strong><br>
-        <span class="pool-amount" id="airdropPoolBalance">Loading...</span> <strong style="color:var(--green);">$ROX</strong>
+        <strong>Total Airdrop Pool (Locked On-Chain)</strong><br>
+        <span class="pool-amount" id="airdropPoolBalance">Loading...</span> <strong>$ROX</strong>
     </div>
     <a href="https://sepolia.basescan.org/address/0x3cf099e1237272e6cd6591bd6460367a5d074683" target="_blank">
-        <button class="main-btn" style="padding:12px 30px;">Verify Pool on BaseScan 🔍</button>
+        <button class="main-btn" style="padding:12px 30px;">Verify on BaseScan 🔍</button>
     </a>
 
-    <div style="margin:20px 0; text-align:left;">
-        <p><strong>Your Current XP:</strong> <span id="userAirdropXP" style="font-size:2em; color:var(--green); font-weight:bold;">Connect wallet</span></p>
-        <p><strong>Your Current Rank:</strong> <span id="userAirdropRank" style="font-size:1.8em; color:#FFD700;">-</span></p>
-        <p><strong>Total Participants:</strong> <span id="airdropParticipants">0</span> / 1500 <span id="airdropFull" style="color:#FF0000; display:none;">(FULL!)</span></p>
-        <p><strong>Eligible for Airdrop?</strong> <span id="airdropEligible" style="font-size:1.4em;">Connect wallet</span></p>
+    <div style="margin:30px 0; text-align:left;">
+        <p><strong>Your XP:</strong> <span id="userAirdropXP" style="font-size:2.2em; color:var(--green); font-weight:bold;">Connect wallet</span></p>
+        <p><strong>Your Rank:</strong> <span id="userAirdropRank" style="font-size:1.8em; color:#FFD700;">-</span></p>
+        <p><strong>Participants:</strong> <span id="airdropParticipants">0</span> / 1,500</p>
+        <p><strong>Airdrop Eligible?</strong> <span id="airdropEligible" style="font-size:1.4em;">Connect wallet</span></p>
     </div>
 
-    <!-- Sybil Proof / Eligibility Section (Replaced Leaderboard) -->
     <div class="sybil-box">
-        <h3 style="color:var(--gold); margin-top:0;">🛡️ Sybil Resistance & Eligibility Proof</h3>
-        <p>To ensure fair distribution and prevent sybil attacks, eligibility requires completion of the two compulsory tasks below.</p>
-        <p><strong>Only users who complete both tasks will be ranked and eligible for $ROX airdrop rewards.</strong></p>
+        <h3 style="color:var(--gold); margin-top:0;">🛡️ Sybil Resistance & Fair Distribution</h3>
+        <p>To ensure a fair airdrop and prevent abuse, eligibility requires completing the two compulsory tasks below.</p>
+        <p><strong>Only users who complete both compulsory tasks will qualify for $ROX rewards.</strong></p>
     </div>
 
-    <!-- Compulsory Tasks -->
     <div class="compulsory">
-        <h3 style="color:var(--green);">Compulsory Tasks (Required for Eligibility)</h3>
-        <button class="main-btn" id="nftBonusBtn" style="margin:8px 0; padding:12px; font-size:1.4em;">Claim NFT Holder Bonus (+500 XP)</button><br>
-        <button class="main-btn" id="predictBtnAirdrop" style="margin:8px 0; padding:12px; font-size:1.4em;">Submit Legacy Vault Price Prediction (+300 XP)</button>
+        <h3 style="color:var(--green); margin-top:0;">Compulsory Tasks (Required for Eligibility)</h3>
+        <button class="main-btn" id="nftBonusBtn" style="font-size:1.4em; padding:18px;">Claim NFT Holder Bonus (+500 XP)</button><br><br>
+        <button class="main-btn" id="predictionTaskBtn" style="font-size:1.4em; padding:18px;">Submit Legacy Vault Price Prediction (+300 XP)</button>
     </div>
 
-    <!-- Optional Tasks -->
-    <div style="background:rgba(255,215,0,0.2); padding:15px; border-radius:12px; margin:20px 0; border:2px dashed var(--gold);">
-        <p style="margin:5px 0;"><strong>Optional Tasks (Boost Your Rank)</strong></p>
-        <button class="main-btn" id="dailyCheckinBtn" style="margin:8px 0; padding:12px;">Daily Check-in (+5 XP)</button><br>
-        <button class="main-btn" id="weeklyBonusBtn" style="margin:8px 0; padding:12px;">Claim Weekly Streak (+30 XP)</button><br>
-        <button class="main-btn" id="monthlyBonusBtn" style="margin:8px 0; padding:12px;">Claim Monthly Bonus (+80 XP)</button><br>
-        <button class="main-btn" id="holderBonusBtn" style="margin:8px 0; padding:12px;">Claim Token Holder Bonus (up to +600 XP)</button><br>
-        <button class="main-btn" id="campaignBonusBtn" style="margin:8px 0; padding:12px;">Claim Campaign Bonus (+100 XP)</button><br>
-        <button class="main-btn" id="claimAirdropBtn" disabled style="margin:20px 0; font-size:1.4em; padding:16px;">Claim Your Airdrop Rewards (60% Immediate)</button>
+    <div style="background:rgba(255,215,0,0.2); padding:20px; border-radius:12px; margin:30px 0; border:2px dashed var(--gold);">
+        <h3 style="color:var(--gold); margin-top:0;">Optional Tasks (Boost Your Rank)</h3>
+        <button class="main-btn" id="dailyCheckinBtn">Daily Check-in (+5 XP)</button><br><br>
+        <button class="main-btn" id="weeklyBonusBtn">Weekly Streak Bonus (+30 XP)</button><br><br>
+        <button class="main-btn" id="monthlyBonusBtn">Monthly Bonus (+80 XP)</button><br><br>
+        <button class="main-btn" id="holderBonusBtn">Token Holder Bonus (up to +600 XP)</button><br><br>
+        <button class="main-btn" id="campaignBonusBtn">Campaign Participation Bonus (+100 XP)</button><br><br>
+        <button class="main-btn" id="claimAirdropBtn" disabled style="font-size:1.5em; padding:20px;">Claim Airdrop Rewards (60% Immediate)</button>
     </div>
 
-    <button class="main-btn" id="refreshLeaderboardBtn" style="margin-top:10px;">Refresh Data</button>
+    <button class="main-btn" id="refreshDataBtn">Refresh Data</button>
 </div>
 </div>
-
-<!-- Other sections (presale, staking, etc.) remain the same -->
 
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
-
-<script>
-let provider, signer, airdropContract, tokenContract, userAddress = null;
-
-async function connectWallet() {
-  if (!window.ethereum) return alert('Please install MetaMask!');
-  try {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    provider = new ethers.providers.Web3Provider(window.ethereum);
-    signer = provider.getSigner();
-    userAddress = await signer.getAddress();
-
-    document.getElementById('walletAddress').textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
-    document.getElementById('walletAddress').style.display = 'block';
-    document.getElementById('connectBtn').style.display = 'none';
-    document.getElementById('disconnectBtn').style.display = 'inline-block';
-
-    initContractsAndLoad();
-  } catch (err) {
-    alert('Connection failed: ' + err.message);
-  }
-}
-
-function disconnectWallet() {
-  provider = signer = airdropContract = tokenContract = userAddress = null;
-  document.getElementById('walletAddress').style.display = 'none';
-  document.getElementById('connectBtn').style.display = 'inline-block';
-  document.getElementById('disconnectBtn').style.display = 'none';
-
-  document.getElementById('userAirdropXP').innerText = 'Connect wallet';
-  document.getElementById('airdropEligible').innerText = 'Connect wallet';
-  document.getElementById('userAirdropRank').innerText = '-';
-  document.getElementById('airdropPoolBalance').innerText = 'Loading...';
-}
-
-function initContractsAndLoad() {
-  const AIRDROP_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
-  const ROX_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491";
-
-  const AIRDROP_ABI = [
-    "function dailyCheckin() external",
-    "function claimWeeklyBonus() external",
-    "function claimMonthlyBonus() external",
-    "function claimHolderBonus() external",
-    "function claimNFTBonus() external",
-    "function claimCampaignBonus() external",
-    "function claimAirdrop() external",
-    "function xpOf(address) view returns (uint256)",
-    "function isEligible(address) view returns (bool)",
-    "function totalParticipants() view returns (uint256)"
-  ];
-
-  const TOKEN_ABI = ["function balanceOf(address) view returns (uint256)"];
-
-  airdropContract = new ethers.Contract(AIRDROP_ADDRESS, AIRDROP_ABI, signer);
-  tokenContract = new ethers.Contract(ROX_ADDRESS, TOKEN_ABI, provider);
-
-  loadAirdropData();
-}
-
-async function loadAirdropData() {
-  if (!airdropContract || !userAddress) return;
-
-  try {
-    // Pool balance - clean number
-    const poolBal = await tokenContract.balanceOf(airdropContract.address);
-    const poolClean = parseFloat(ethers.utils.formatEther(poolBal)).toLocaleString();
-    document.getElementById('airdropPoolBalance').innerText = poolClean;
-
-    // XP - clean integer (no 18 zeros)
-    const xp = await airdropContract.xpOf(userAddress);
-    document.getElementById('userAirdropXP').innerText = xp.toString();
-
-    const eligible = await airdropContract.isEligible(userAddress);
-    const participants = await airdropContract.totalParticipants();
-
-    document.getElementById('airdropEligible').innerText = eligible ? 'Yes ✅' : 'No ❌';
-    document.getElementById('airdropParticipants').innerText = participants.toString();
-
-  } catch (err) {
-    console.error(err);
-    alert('Error loading data: ' + err.message);
-  }
-}
-
-async function executeTask(methodName) {
-  if (!airdropContract) return alert('Connect wallet first!');
-  try {
-    const tx = await airdropContract[methodName]();
-    await tx.wait();
-    alert('Success! Transaction: ' + tx.hash);
-    loadAirdropData();
-  } catch (err) {
-    alert('Failed: ' + (err.reason || err.message || err));
-  }
-}
-
-// Navigation
-document.querySelectorAll('nav button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    const section = document.getElementById(btn.dataset.section);
-    if (section) section.classList.add('active');
-    btn.classList.add('active');
-  });
-});
-
-window.addEventListener('load', () => {
-  document.querySelector('nav button[data-section="presale"]')?.click();
-});
-
-// Event listeners
-document.getElementById('connectBtn').addEventListener('click', connectWallet);
-document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
-document.getElementById('dailyCheckinBtn').addEventListener('click', () => executeTask('dailyCheckin'));
-document.getElementById('weeklyBonusBtn').addEventListener('click', () => executeTask('claimWeeklyBonus'));
-document.getElementById('monthlyBonusBtn').addEventListener('click', () => executeTask('claimMonthlyBonus'));
-document.getElementById('holderBonusBtn').addEventListener('click', () => executeTask('claimHolderBonus'));
-document.getElementById('nftBonusBtn').addEventListener('click', () => executeTask('claimNFTBonus'));
-document.getElementById('campaignBonusBtn').addEventListener('click', () => executeTask('claimCampaignBonus'));
-document.getElementById('refreshLeaderboardBtn').addEventListener('click', loadAirdropData);
-</script>
 
 <!-- MODULAR JS FILES – ORDER MATTERS -->
 <script src="abi.js"></script>
@@ -267,6 +259,5 @@ document.getElementById('refreshLeaderboardBtn').addEventListener('click', loadA
 <script src="disconnect-button.js"></script>
 <script src="auto-refresh.js"></script>
 <script src="charts-init.js"></script>
-
 </body>
 </html>
