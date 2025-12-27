@@ -8,7 +8,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-:root { --gold:#FFD700; --orange:#FF4500; --dark-orange:#FF8C00; --glass:rgba(255,140,0,0.3); --green:#00FF00; }
+:root { 
+  --gold:#FFD700; 
+  --orange:#FF4500; 
+  --dark-orange:#FF8C00; 
+  --glass:rgba(255,140,0,0.3); 
+  --green:#00FF00; 
+}
 body { margin:0; font-family:Segoe UI,Arial; background:linear-gradient(135deg,var(--dark-orange),var(--orange)); color:#fff; min-height:100vh; }
 .container { max-width:960px; margin:auto; padding:20px; }
 header { text-align:center; padding:60px 20px; background:var(--glass); border-radius:24px; border:2px solid var(--gold); }
@@ -238,26 +244,144 @@ Excludes locked rewards, vesting & team allocations<br>
 <footer>© 2025 Rox Protocol • Base Sepolia Testnet 🔥</footer>
 </div>
 
-<!-- MODULAR JS FILES – ORDER MATTERS -->
-<script src="abi.js"></script>
-<script src="constants.js"></script>
-<script src="wallet-connect.js"></script>
-<script src="contract-init.js"></script>
-<script src="utils.js"></script>
-<script src="data-load.js"></script>
-<script src="countdown.js"></script>
-<script src="prediction.js"></script>
-<script src="ui-update.js"></script>
-<script src="main.js"></script>
-<script src="nav-switch.js"></script>
-<script src="presale-button.js"></script>
-<script src="staking-button.js"></script>
-<script src="rewards-button.js"></script>
-<script src="vested-owner-button.js"></script>
-<script src="vested-growth-button.js"></script>
-<script src="charts-update.js"></script>
-<script src="disconnect-button.js"></script>
-<script src="auto-refresh.js"></script>
-<script src="charts-init.js"></script>
+<script>
+let provider, signer, airdropContract, tokenContract, userAddress = null;
+
+async function connectWallet() {
+  if (!window.ethereum) return alert('Please install MetaMask!');
+  try {
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    document.getElementById('walletAddress').textContent = userAddress.slice(0,6) + '...' + userAddress.slice(-4);
+    document.getElementById('walletAddress').style.display = 'block';
+    document.getElementById('connectBtn').style.display = 'none';
+    document.getElementById('disconnectBtn').style.display = 'inline-block';
+
+    initContracts();
+    loadAirdropData();
+  } catch (err) {
+    alert('Connection failed: ' + err.message);
+  }
+}
+
+function disconnectWallet() {
+  provider = signer = airdropContract = tokenContract = userAddress = null;
+  document.getElementById('walletAddress').style.display = 'none';
+  document.getElementById('connectBtn').style.display = 'inline-block';
+  document.getElementById('disconnectBtn').style.display = 'none';
+
+  document.getElementById('userAirdropXP').innerText = 'Connect wallet';
+  document.getElementById('airdropEligible').innerText = 'Connect wallet';
+  document.getElementById('userAirdropRank').innerText = '-';
+  document.getElementById('airdropPoolBalance').innerText = 'Loading...';
+}
+
+function initContracts() {
+  if (!signer) return;
+
+  const AIRDROP_ADDRESS = "0x3cf099e1237272e6cd6591bd6460367a5d074683";
+  const ROX_ADDRESS = "0x228c276d885d254b464b69dcfbc75dd96f8a2491";
+
+  const AIRDROP_ABI = [
+    "function dailyCheckin() external",
+    "function claimWeeklyBonus() external",
+    "function claimMonthlyBonus() external",
+    "function claimHolderBonus() external",
+    "function claimNFTBonus() external",
+    "function claimCampaignBonus() external",
+    "function claimAirdrop() external",
+    "function xpOf(address) view returns (uint256)",
+    "function isEligible(address) view returns (bool)",
+    "function totalParticipants() view returns (uint256)"
+  ];
+
+  const TOKEN_ABI = ["function balanceOf(address) view returns (uint256)"];
+
+  airdropContract = new ethers.Contract(AIRDROP_ADDRESS, AIRDROP_ABI, signer);
+  tokenContract = new ethers.Contract(ROX_ADDRESS, TOKEN_ABI, provider);
+}
+
+async function loadAirdropData() {
+  if (!airdropContract || !userAddress) return;
+
+  try {
+    const poolBal = await tokenContract.balanceOf(airdropContract.address);
+    const poolClean = parseFloat(ethers.utils.formatEther(poolBal)).toLocaleString();
+    document.getElementById('airdropPoolBalance').innerText = poolClean;
+
+    const xp = await airdropContract.xpOf(userAddress);
+    document.getElementById('userAirdropXP').innerText = xp.toString();
+
+    const eligible = await airdropContract.isEligible(userAddress);
+    document.getElementById('airdropEligible').innerText = eligible ? 'Yes ✅' : 'No ❌';
+
+    const participants = await airdropContract.totalParticipants();
+    document.getElementById('airdropParticipants').innerText = participants.toString();
+
+  } catch (err) {
+    console.error(err);
+    alert('Data load error: ' + err.message);
+  }
+}
+
+async function executeTask(method) {
+  if (!airdropContract) return alert('Connect wallet first');
+  try {
+    const tx = await airdropContract[method]();
+    await tx.wait();
+    alert('Success! TX: ' + tx.hash);
+    loadAirdropData();
+  } catch (err) {
+    alert('Failed: ' + (err.reason || err.message));
+  }
+}
+
+// Countdown for Legacy Vault
+const countdownElement = document.getElementById('countdownTimer');
+if (countdownElement) {
+  setInterval(() => {
+    const end = new Date('2026-01-02T00:00:00Z');
+    const now = new Date();
+    const diff = end - now;
+    if (diff <= 0) {
+      countdownElement.innerText = 'Contest Ended';
+      return;
+    }
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    countdownElement.innerText = `${d}d ${h}h ${m}m`;
+  }, 60000);
+}
+
+// Navigation
+document.querySelectorAll('nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    const section = document.getElementById(btn.dataset.section);
+    if (section) section.classList.add('active');
+    btn.classList.add('active');
+  });
+});
+
+window.addEventListener('load', () => {
+  document.querySelector('nav button[data-section="presale"]')?.click();
+});
+
+// Buttons
+document.getElementById('connectBtn').addEventListener('click', connectWallet);
+document.getElementById('disconnectBtn').addEventListener('click', disconnectWallet);
+document.getElementById('dailyCheckinBtn').addEventListener('click', () => executeTask('dailyCheckin'));
+document.getElementById('weeklyBonusBtn').addEventListener('click', () => executeTask('claimWeeklyBonus'));
+document.getElementById('monthlyBonusBtn').addEventListener('click', () => executeTask('claimMonthlyBonus'));
+document.getElementById('holderBonusBtn').addEventListener('click', () => executeTask('claimHolderBonus'));
+document.getElementById('nftBonusBtn').addEventListener('click', () => executeTask('claimNFTBonus'));
+document.getElementById('campaignBonusBtn').addEventListener('click', () => executeTask('claimCampaignBonus'));
+document.getElementById('refreshDataBtn').addEventListener('click', loadAirdropData);
+</script>
 </body>
 </html>
