@@ -1,0 +1,379 @@
+/* Receipt Modal Styles - Elyson Protocol Theme */
+
+/* ────────────────────────────────────────────────
+   Main modal & container adjustments
+───────────────────────────────────────────────── */
+
+.receipt-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.receipt-modal.active {
+    opacity: 1;
+}
+
+.receipt-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+}
+
+.receipt-container {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid #ff6b35;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 88vh;           /* ← raised from 85vh */
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3);
+    animation: slideUp 0.4s ease;
+    margin: auto;
+}
+
+/* ────────────────────────────────────────────────
+   DESKTOP — make it taller + more compact vertically
+───────────────────────────────────────────────── */
+
+@media (min-width: 769px) {
+    .receipt-container {
+        min-width: 520px;
+        max-width: 680px;
+        max-height: 94vh;           /* ← allows much more content before scroll */
+    }
+
+    .receipt-header {
+        padding: 20px 28px;         /* reduced vertical padding */
+    }
+
+    .receipt-body {
+        padding: 20px 28px;         /* was 30px */
+    }
+
+    .receipt-status {
+        padding: 24px 20px;         /* tighter than original 30px 20px */
+        margin-bottom: 20px;
+    }
+
+    .receipt-details {
+        padding: 18px;              /* was 20px */
+        margin-bottom: 20px;
+    }
+
+    .receipt-section {
+        margin-bottom: 16px;        /* was 20px */
+        padding-bottom: 16px;       /* was 20px */
+    }
+
+    .receipt-section:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .receipt-row {
+        padding: 9px 0;             /* was 12px — significant saving */
+        font-size: 14px;
+    }
+
+    .receipt-row strong {
+        font-size: 15px;
+    }
+
+    .receipt-row.highlight {
+        padding: 12px;
+        margin: 8px 0;              /* tighter vertical spacing */
+    }
+
+    .receipt-row.highlight strong {
+        font-size: 17px;
+    }
+
+    .receipt-action-type {
+        font-size: 19px;
+        padding: 13px;
+    }
+
+    .receipt-actions {
+        margin-top: 10px;
+        gap: 10px;
+    }
+
+    .receipt-btn {
+        padding: 14px 24px;         /* slightly smaller than original 15px 25px */
+        font-size: 15.5px;
+    }
+
+    .receipt-footer {
+        padding: 16px 28px;         /* reduced vertical padding */
+    }
+}
+
+/* ────────────────────────────────────────────────
+   MOBILE — keep almost original (small changes only)
+───────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .receipt-container {
+        max-width: 95%;
+        margin: 10px;
+        max-height: 90vh;           /* slightly more room on phones too */
+    }
+
+    .receipt-header {
+        padding: 20px;
+    }
+
+    .receipt-body {
+        padding: 20px;
+    }
+
+    /* rows already stack — no need to change much */
+}
+
+/* ────────────────────────────────────────────────
+   Rest of your original styles (unchanged)
+───────────────────────────────────────────────── */
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.receipt-logo h2 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.receipt-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+
+.receipt-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 32px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.receipt-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.status-icon {
+    font-size: 60px;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+.status-icon.processing {
+    animation: spin 2s linear infinite;
+}
+
+.status-icon.success {
+    color: #4caf50;
+    animation: scaleIn 0.5s ease;
+}
+
+.status-icon.error {
+    color: #f44336;
+    animation: shake 0.5s ease;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+@keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.receipt-status h3 {
+    color: white;
+    margin: 10px 0 5px 0;
+    font-size: 22px;
+}
+
+.receipt-status p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 14px;
+}
+
+.receipt-section h4 {
+    color: #ff6b35;
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.receipt-row span {
+    font-size: 14px;
+}
+
+.receipt-row.highlight {
+    background: rgba(255, 107, 53, 0.15);
+    border-radius: 10px;
+}
+
+.receipt-row.warning {
+    background: rgba(255, 152, 0, 0.15);
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #ff9800;
+}
+
+.receipt-row code {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #ff6b35;
+}
+
+.tx-hash {
+    cursor: pointer;
+}
+
+.tx-hash:hover {
+    background: rgba(255, 107, 53, 0.2);
+}
+
+.highlight-green {
+    color: #4caf50 !important;
+}
+
+.transaction-info {
+    background: rgba(255, 107, 53, 0.05);
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.receipt-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.receipt-btn {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+}
+
+.receipt-btn.primary {
+    background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+}
+
+.receipt-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+}
+
+.receipt-btn.secondary {
+    background: rgba(255, 107, 53, 0.2);
+    color: #ff6b35;
+    border: 2px solid #ff6b35;
+}
+
+.receipt-btn.secondary:hover {
+    background: rgba(255, 107, 53, 0.3);
+}
+
+.receipt-btn.tertiary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.receipt-btn.tertiary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.receipt-footer {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0 0 18px 18px;
+    border-top: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+.receipt-footer p {
+    color: rgba(255, 255, 255, 0.6);
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.receipt-timestamp {
+    color: rgba(255, 107, 53, 0.8);
+    font-weight: bold;
+}
+
+/* Custom Scrollbar (unchanged) */
+.receipt-container::-webkit-scrollbar {
+    width: 8px;
+}
+.receipt-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+.receipt-container::-webkit-scrollbar-thumb {
+    background: #ff6b35;
+    border-radius: 4px;
+}
+.receipt-container::-webkit-scrollbar-thumb:hover {
+    background: #ff8c42;
+}
